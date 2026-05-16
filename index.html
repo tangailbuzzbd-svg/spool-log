@@ -2,74 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spool Production Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Spool App Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .search-focus:focus { ring: 2px; ring-color: #3b82f6; border-color: transparent; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8fafc;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .active-tab {
+            color: #2563eb;
+            border-top: 2px solid #2563eb;
+        }
+        input:focus {
+            outline: none;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .item-card {
+            animation: slideIn 0.3s ease-out forwards;
+        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen p-4 md:p-8">
+<body class="bg-gray-100">
 
-    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
-        
-        <!-- Header Section -->
-        <div class="bg-blue-600 p-6 text-white">
-            <h1 class="text-2xl font-bold uppercase tracking-wide">Spool Production Log</h1>
-            <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm opacity-90">
-                <div class="bg-blue-700/50 p-2 rounded">
-                    <span class="font-semibold">AREA:</span> CS. 23
+    <div class="app-container shadow-2xl">
+        <header class="bg-blue-700 text-white p-4 pt-6 pb-8 rounded-b-[2rem] shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <p class="text-blue-100 text-xs font-semibold uppercase tracking-widest">AREA: CS. 23</p>
+                    <h1 class="text-xl font-bold">Production Log</h1>
                 </div>
-                <div class="bg-blue-700/50 p-2 rounded">
-                    <span class="font-semibold">STATUS:</span> NEW . SPOOL
+                <div class="bg-blue-600/50 px-3 py-1 rounded-full border border-blue-400/30">
+                    <span class="text-[10px] font-bold">NEW . SPOOL</span>
                 </div>
-                <div class="bg-blue-700/50 p-2 rounded">
-                    <span class="font-semibold">VIEW:</span> INTERACTIVE LOG
-                </div>
-            </div>
-        </div>
-
-        <div class="p-6 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row gap-4">
-            <div class="relative flex-grow">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-                <input type="text" id="searchInput" 
-                       class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all" 
-                       placeholder="Search EB or Spool Number...">
             </div>
             
-            <div class="relative min-w-[200px]">
-                <input type="date" id="dateInput" 
-                       class="block w-full px-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all">
-                <button id="clearDate" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-red-500">
-                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                </button>
+            <div class="space-y-3">
+                <div class="relative">
+                    <input type="text" id="searchInput" 
+                           placeholder="Search EB or Spool..." 
+                           class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/60 focus:bg-white focus:text-gray-900 transition-all">
+                    <div class="absolute left-3 top-3.5">
+                        <svg class="h-5 w-5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2">
+                    <div class="relative flex-grow">
+                        <input type="date" id="dateInput" 
+                               class="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-4 text-white text-sm focus:bg-white focus:text-gray-900 transition-all">
+                    </div>
+                    <button id="clearDate" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl border border-white/20 transition-all">
+                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
             </div>
-        </div>
+        </header>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse" id="spoolTable">
-                <thead>
-                    <tr class="bg-gray-100 text-gray-700 uppercase text-xs font-bold tracking-wider">
-                        <th class="px-6 py-4 border-b">Date</th>
-                        <th class="px-6 py-4 border-b">Entry Number (EB)</th>
-                        <th class="px-6 py-4 border-b text-center">Spool Number (SPL)</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200" id="tableBody">
-                    <!-- Data will be inserted by JS -->
-                </tbody>
-            </table>
-        </div>
+        <main class="flex-grow overflow-y-auto custom-scroll p-4 space-y-3" id="listView">
+            <!-- Cards will be injected here -->
+        </main>
 
-        <div class="p-4 bg-gray-50 text-right text-sm text-gray-500 font-medium border-t border-gray-200">
-            Total Entries: <span id="entryCount" class="text-blue-600">0</span>
-        </div>
+        <nav class="bg-white border-t border-gray-200 grid grid-cols-3 h-16">
+            <button class="flex flex-col items-center justify-center active-tab">
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                <span class="text-[10px] mt-1 font-bold">HOME</span>
+            </button>
+            <button class="flex flex-col items-center justify-center text-gray-400">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span class="text-[10px] mt-1 font-bold">STATS</span>
+            </button>
+            <button class="flex flex-col items-center justify-center text-gray-400">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="text-[10px] mt-1 font-bold">SETTINGS</span>
+            </button>
+        </nav>
     </div>
 
     <script>
@@ -89,19 +114,15 @@
             { date: "2026-05-16", eb: "285510", spl: "001" }, { date: "2026-05-16", eb: "285512", spl: "005" },
             { date: "2026-05-16", eb: "285692", spl: "005" }, { date: "2026-05-16", eb: "285516", spl: "005" },
             { date: "2026-05-16", eb: "127775", spl: "002" }, { date: "2026-05-16", eb: "127552", spl: "006" },
-            { date: "2026-05-16", eb: "287501", spl: "001" }, { date: "2026-05-16", eb: "125322", spl: "002" },
-            // Sample entries for other dates to test the filter
-            { date: "2026-05-17", eb: "300123", spl: "001" }, { date: "2026-05-17", eb: "300124", spl: "002" },
-            { date: "2026-05-15", eb: "110555", spl: "009" }
+            { date: "2026-05-16", eb: "287501", spl: "001" }, { date: "2026-05-16", eb: "125322", spl: "002" }
         ];
 
-        const tableBody = document.getElementById('tableBody');
+        const listView = document.getElementById('listView');
         const searchInput = document.getElementById('searchInput');
         const dateInput = document.getElementById('dateInput');
         const clearDate = document.getElementById('clearDate');
-        const entryCount = document.getElementById('entryCount');
 
-        function renderTable() {
+        function renderList() {
             const searchText = searchInput.value.toLowerCase();
             const selectedDate = dateInput.value;
 
@@ -109,40 +130,56 @@
                 const matchesSearch = item.eb.toLowerCase().includes(searchText) || 
                                      item.spl.toLowerCase().includes(searchText);
                 const matchesDate = selectedDate === "" || item.date === selectedDate;
-                
                 return matchesSearch && matchesDate;
             });
 
-            tableBody.innerHTML = filteredData.map(item => `
-                <tr class="hover:bg-blue-50 transition-colors">
-                    <td class="px-6 py-4 text-xs font-medium text-gray-500">${item.date}</td>
-                    <td class="px-6 py-4 font-mono text-gray-800 font-semibold">${item.eb}</td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold border border-gray-200">
-                            ${item.spl}
-                        </span>
-                    </td>
-                </tr>
-            `).join('');
-
-            entryCount.textContent = filteredData.length;
-
             if(filteredData.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-gray-400 italic">No matching results found for this search/date</td></tr>`;
+                listView.innerHTML = `
+                    <div class="text-center py-20">
+                        <div class="bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <p class="text-gray-500 font-medium">No records found</p>
+                    </div>
+                `;
+                return;
             }
+
+            listView.innerHTML = filteredData.map(item => `
+                <div class="item-card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center active:scale-[0.98] transition-transform">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                            <span class="text-blue-600 font-bold text-lg">${item.spl.slice(-2)}</span>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-tighter">EB NUMBER</p>
+                            <p class="text-gray-800 font-bold text-lg leading-tight">${item.eb}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Spool ID</p>
+                        <span class="bg-gray-800 text-white text-[10px] px-2.5 py-1 rounded-lg font-black tracking-widest">
+                            SPL:${item.spl}
+                        </span>
+                        <p class="text-[10px] text-blue-500 mt-2 font-medium">${item.date}</p>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // Event Listeners
-        searchInput.addEventListener('input', renderTable);
-        dateInput.addEventListener('change', renderTable);
+        searchInput.addEventListener('input', renderList);
+        dateInput.addEventListener('change', renderList);
         
         clearDate.addEventListener('click', () => {
             dateInput.value = "";
-            renderTable();
+            renderList();
+            // Provide a small haptic feel by changing color briefly
+            clearDate.classList.add('bg-red-500');
+            setTimeout(() => clearDate.classList.remove('bg-red-500'), 200);
         });
 
         // Initial render
-        window.onload = () => renderTable();
+        window.onload = () => renderList();
 
     </script>
 </body>
