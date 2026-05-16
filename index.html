@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spool Production Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .search-focus:focus { ring: 2px; ring-color: #3b82f6; border-color: transparent; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+        
+        <!-- Header Section -->
+        <div class="bg-blue-600 p-6 text-white">
+            <h1 class="text-2xl font-bold uppercase tracking-wide">Spool Production Log</h1>
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm opacity-90">
+                <div class="bg-blue-700/50 p-2 rounded">
+                    <span class="font-semibold">AREA:</span> CS. 23
+                </div>
+                <div class="bg-blue-700/50 p-2 rounded">
+                    <span class="font-semibold">STATUS:</span> NEW . SPOOL
+                </div>
+                <div class="bg-blue-700/50 p-2 rounded">
+                    <span class="font-semibold">VIEW:</span> INTERACTIVE LOG
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row gap-4">
+            <div class="relative flex-grow">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <input type="text" id="searchInput" 
+                       class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all" 
+                       placeholder="Search EB or Spool Number...">
+            </div>
+            
+            <div class="relative min-w-[200px]">
+                <input type="date" id="dateInput" 
+                       class="block w-full px-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all">
+                <button id="clearDate" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-red-500">
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse" id="spoolTable">
+                <thead>
+                    <tr class="bg-gray-100 text-gray-700 uppercase text-xs font-bold tracking-wider">
+                        <th class="px-6 py-4 border-b">Date</th>
+                        <th class="px-6 py-4 border-b">Entry Number (EB)</th>
+                        <th class="px-6 py-4 border-b text-center">Spool Number (SPL)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200" id="tableBody">
+                    <!-- Data will be inserted by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-4 bg-gray-50 text-right text-sm text-gray-500 font-medium border-t border-gray-200">
+            Total Entries: <span id="entryCount" class="text-blue-600">0</span>
+        </div>
+    </div>
+
+    <script>
+        const data = [
+            { date: "2026-05-16", eb: "128357", spl: "001" }, { date: "2026-05-16", eb: "128291", spl: "002" },
+            { date: "2026-05-16", eb: "128335", spl: "002" }, { date: "2026-05-16", eb: "285511", spl: "005" },
+            { date: "2026-05-16", eb: "128395", spl: "003" }, { date: "2026-05-16", eb: "120727", spl: "002" },
+            { date: "2026-05-16", eb: "285517", spl: "005" }, { date: "2026-05-16", eb: "128388", spl: "004" },
+            { date: "2026-05-16", eb: "108579", spl: "001" }, { date: "2026-05-16", eb: "128410", spl: "003" },
+            { date: "2026-05-16", eb: "285678", spl: "007" }, { date: "2026-05-16", eb: "128412", spl: "003" },
+            { date: "2026-05-16", eb: "290567", spl: "006" }, { date: "2026-05-16", eb: "128367", spl: "005" },
+            { date: "2026-05-16", eb: "128344", spl: "001" }, { date: "2026-05-16", eb: "285688", spl: "003" },
+            { date: "2026-05-16", eb: "128346", spl: "002" }, { date: "2026-05-16", eb: "125259", spl: "003" },
+            { date: "2026-05-16", eb: "128279", spl: "001" }, { date: "2026-05-16", eb: "290488", spl: "002" },
+            { date: "2026-05-16", eb: "128000", spl: "002" }, { date: "2026-05-16", eb: "285756", spl: "002" },
+            { date: "2026-05-16", eb: "128331", spl: "001" }, { date: "2026-05-16", eb: "128371", spl: "003" },
+            { date: "2026-05-16", eb: "285510", spl: "001" }, { date: "2026-05-16", eb: "285512", spl: "005" },
+            { date: "2026-05-16", eb: "285692", spl: "005" }, { date: "2026-05-16", eb: "285516", spl: "005" },
+            { date: "2026-05-16", eb: "127775", spl: "002" }, { date: "2026-05-16", eb: "127552", spl: "006" },
+            { date: "2026-05-16", eb: "287501", spl: "001" }, { date: "2026-05-16", eb: "125322", spl: "002" },
+            // Sample entries for other dates to test the filter
+            { date: "2026-05-17", eb: "300123", spl: "001" }, { date: "2026-05-17", eb: "300124", spl: "002" },
+            { date: "2026-05-15", eb: "110555", spl: "009" }
+        ];
+
+        const tableBody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+        const dateInput = document.getElementById('dateInput');
+        const clearDate = document.getElementById('clearDate');
+        const entryCount = document.getElementById('entryCount');
+
+        function renderTable() {
+            const searchText = searchInput.value.toLowerCase();
+            const selectedDate = dateInput.value;
+
+            const filteredData = data.filter(item => {
+                const matchesSearch = item.eb.toLowerCase().includes(searchText) || 
+                                     item.spl.toLowerCase().includes(searchText);
+                const matchesDate = selectedDate === "" || item.date === selectedDate;
+                
+                return matchesSearch && matchesDate;
+            });
+
+            tableBody.innerHTML = filteredData.map(item => `
+                <tr class="hover:bg-blue-50 transition-colors">
+                    <td class="px-6 py-4 text-xs font-medium text-gray-500">${item.date}</td>
+                    <td class="px-6 py-4 font-mono text-gray-800 font-semibold">${item.eb}</td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold border border-gray-200">
+                            ${item.spl}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+
+            entryCount.textContent = filteredData.length;
+
+            if(filteredData.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-gray-400 italic">No matching results found for this search/date</td></tr>`;
+            }
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', renderTable);
+        dateInput.addEventListener('change', renderTable);
+        
+        clearDate.addEventListener('click', () => {
+            dateInput.value = "";
+            renderTable();
+        });
+
+        // Initial render
+        window.onload = () => renderTable();
+
+    </script>
+</body>
+</html>
