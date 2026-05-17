@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Spool App Pro - Multiarea</title>
+    <title>Spool App Pro - Ishaque Ali Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;950&display=swap" rel="stylesheet">
     
     <style>
-        /* Mobile Dynamic Viewport Fixes */
+        /* Mobile Dynamic Viewport & Layout Fixes - Browser screen scale fix */
         html, body {
             height: 100%;
             height: -webkit-fill-available;
@@ -25,6 +25,7 @@
         }
 
         .app-container {
+            width: 100%;
             max-width: 500px;
             margin: 0 auto;
             height: 100%;
@@ -35,6 +36,14 @@
             background-color: #f8fafc;
             position: relative;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        /* Keyboard open hole layout auto zoom bondho korar jonno and Easy Reading size for inputs */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
         }
 
         .custom-scroll::-webkit-scrollbar {
@@ -43,7 +52,7 @@
         
         .active-tab {
             color: #2563eb;
-            border-top: 3px solid #2563eb;
+            border-top: 4px solid #2563eb;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -59,474 +68,557 @@
             animation: slideIn 0.2s ease-out forwards;
         }
 
+        /* Self-contained scrolling system */
         .tab-content {
             display: none;
             flex-direction: column;
             height: 100%;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding-bottom: 6.5rem; /* Safe padding for floating add button and larger content */
         }
 
         .tab-content.active {
             display: flex;
         }
 
-        /* Safe margins for mobile dynamic screens */
+        /* Bottom Navigation fixed at bottom screen flow with larger height for Abbu's touch */
         .bottom-nav {
-            padding-bottom: env(safe-area-inset-bottom, 12px);
+            padding-bottom: calc(env(safe-area-inset-bottom, 12px) + 2px);
             box-shadow: 0 -4px 20px -5px rgba(0, 0, 0, 0.08);
+            z-index: 40;
+            background-color: #ffffff;
+            height: 4.8rem; /* Raised for easier touch targets */
+        }
+
+        /* Haptic tap animations */
+        .active-press:active {
+            transform: scale(0.95);
+            opacity: 0.85;
         }
     </style>
 </head>
 <body class="bg-slate-900">
 
-    <div class="app-container overflow-hidden">
+    <div class="app-container flex flex-col overflow-hidden">
         
-        <!-- App Header (Fixed at top) -->
-        <header class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-4 pt-5 pb-5 rounded-b-[2rem] shadow-md shrink-0 z-30">
-            <div class="flex justify-between items-center mb-3">
+        <!-- App Header (Top Section - Dynamic Sticky Compact) -->
+        <header class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-4 pt-6 pb-6 rounded-b-[2rem] shadow-md shrink-0 z-30">
+            <div class="flex justify-between items-center mb-4">
                 <div>
-                    <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest" id="areaSubtitle">AREA: ALL</p>
-                    <h1 class="text-xl font-black tracking-tight flex items-center gap-2">
+                    <p class="text-blue-100 text-xs font-black uppercase tracking-widest animate-pulse" id="areaSubtitle">AREA: ALL</p>
+                    <h1 class="text-2xl font-black tracking-tight flex items-center gap-2" data-translate="title">
                         Production Log Pro
-                        <span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">V2.3</span>
                     </h1>
                 </div>
-                <div class="bg-white/10 px-3 py-1 rounded-full border border-white/20">
-                    <span class="text-[10px] font-bold" id="totalCountBadge">0 SPOOLS</span>
+                
+                <!-- Multilingual Switcher - EN | বাং (Bangla Latin) Toggle Pill -->
+                <div class="flex items-center gap-2.5">
+                    <div class="flex bg-white/10 p-1 rounded-xl border border-white/20 text-xs font-black shrink-0">
+                        <button onclick="setLanguage('en')" id="lang-btn-en" class="px-3 py-1.5 rounded-lg transition-all active-press">EN</button>
+                        <button onclick="setLanguage('bn')" id="lang-btn-bn" class="px-3 py-1.5 rounded-lg transition-all active-press">বাং</button>
+                    </div>
+                    <div class="bg-white/10 px-3 py-2 rounded-full border border-white/20 shrink-0 shadow-sm">
+                        <span class="text-xs font-black" id="totalCountBadge">0 SPOOLS</span>
+                    </div>
                 </div>
             </div>
             
-            <!-- Controls (Search & Date Filters) -->
-            <div class="space-y-2.5">
+            <!-- Search & Filters Container (Resized larger for easy reading) -->
+            <div class="space-y-3">
                 <div class="relative">
                     <input type="text" id="searchInput" 
                            placeholder="Search EB or Spool (SPL)..." 
-                           class="w-full bg-white/10 border border-white/20 rounded-xl py-2.5 pl-10 pr-4 text-white text-sm placeholder-white/60 focus:bg-white focus:text-gray-900 focus:shadow-inner transition-all">
-                    <div class="absolute left-3 top-3.5">
-                        <svg class="h-4 w-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                           class="w-full bg-white/15 border border-white/25 rounded-2xl py-4 pl-12 pr-4 text-white text-base placeholder-white/60 focus:bg-white focus:text-gray-900 focus:shadow-inner transition-all font-bold">
+                    <div class="absolute left-4 top-4.5">
+                        <svg class="h-5 w-5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                 </div>
                 
-                <div class="flex gap-2">
+                <div class="flex gap-2.5">
                     <div class="relative flex-grow">
                         <input type="date" id="dateInput" value="2026-05-16"
-                               class="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3 text-white text-xs focus:bg-white focus:text-gray-900 transition-all">
+                               class="w-full bg-white/15 border border-white/25 rounded-2xl py-3.5 px-4 text-white text-base font-black focus:bg-white focus:text-gray-900 transition-all">
                     </div>
-                    <button id="clearDate" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl border border-white/20 transition-all flex items-center justify-center">
-                        <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <button id="clearDate" class="bg-white/10 hover:bg-white/20 p-3.5 rounded-2xl border border-white/20 transition-all flex items-center justify-center active-press">
+                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
-                    <button id="shareData" class="bg-white/15 hover:bg-white/25 px-3 py-2 rounded-xl border border-white/20 transition-all flex items-center gap-1 text-xs font-bold text-white">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.136-2.068m0 5.652l-4.136-2.068a3 3 0 110-3.176m4.136 2.068a3 3 0 114.773 2.628l-4.136-2.068M3 12a3 3 0 106 0 3 3 0 00-6 0zm11-6a3 3 0 116 0 3 3 0 01-6 0zm5 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        Share
+                    <button id="shareData" class="bg-white/15 hover:bg-white/25 px-4 py-3.5 rounded-2xl border border-white/20 transition-all flex items-center gap-1.5 text-xs font-black text-white active-press">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.136-2.068m0 5.652l-4.136-2.068a3 3 0 110-3.176m4.136 2.068a3 3 0 114.773 2.628l-4.136-2.068M3 12a3 3 0 106 0 3 3 0 00-6 0zm11-6a3 3 0 116 0 3 3 0 01-6 0zm5 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span data-translate="shareBtn">Share</span>
                     </button>
                 </div>
 
-                <div class="flex gap-1.5 pt-1 overflow-x-auto custom-scroll">
-                    <button onclick="setAreaFilter('ALL')" id="pill-ALL" class="shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white text-blue-800 border border-white/40 transition-all">ALL AREAS</button>
-                    <button onclick="setAreaFilter('CS. 14')" id="pill-CS14" class="shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-all">CS. 14 (NEW)</button>
-                    <button onclick="setAreaFilter('CS. 23')" id="pill-CS23" class="shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-all">CS. 23</button>
+                <!-- Dynamic Area Buttons -->
+                <div class="flex gap-2 pt-1 overflow-x-auto custom-scroll" id="areaPillsContainer">
+                    <!-- Area list dynamically loaded from Local Storage entries -->
                 </div>
             </div>
         </header>
 
-        <!-- Main Content Area -->
-        <div class="flex-grow relative overflow-hidden p-3 pb-0">
+        <!-- Dynamic Content Screens -->
+        <div class="flex-grow relative overflow-hidden p-3.5 pb-0">
             
-            <!-- Tab 1: HOME (List View) -->
-            <div id="homeTab" class="tab-content active custom-scroll pb-24">
-                <div class="grid grid-cols-2 gap-2 shrink-0 mb-3">
-                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+            <!-- Screen 1: Home View -->
+            <div id="homeTab" class="tab-content active custom-scroll">
+                <div class="grid grid-cols-2 gap-3 shrink-0 mb-4">
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase">Active Filter</p>
-                            <p class="text-sm font-extrabold text-blue-900" id="statActiveArea">All Areas</p>
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider" data-translate="statActiveAreaLabel">Active Filter</p>
+                            <p class="text-base font-black text-blue-900 mt-0.5" id="statActiveArea">All Areas</p>
                         </div>
-                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-[10px]" id="statIconArea">ALL</div>
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-black text-xs" id="statIconArea">ALL</div>
                     </div>
-                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase">Total Items</p>
-                            <p class="text-sm font-extrabold text-indigo-900" id="statCount">0</p>
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider" data-translate="statTotalItemsLabel">Total Items</p>
+                            <p class="text-base font-black text-indigo-900 mt-0.5" id="statCount">0</p>
                         </div>
-                        <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-xs">SUM</div>
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-xs">SUM</div>
                     </div>
                 </div>
 
-                <div class="space-y-2.5" id="listView">
-                    <!-- Dynamic cards injected here -->
+                <!-- Database items list -->
+                <div class="space-y-3 pb-4" id="listView">
+                    <!-- Cards will be populated from localStorage -->
                 </div>
             </div>
 
-            <!-- Tab 2: BULK IMPORT -->
-            <div id="importTab" class="tab-content custom-scroll pb-24">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+            <!-- Screen 2: Paste Board (Classic Bulk Import Flow) -->
+            <div id="importTab" class="tab-content custom-scroll">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-black text-gray-800" data-translate="bulkImportTitle">Bulk Import (Paste)</h3>
+                                <p class="text-xs text-gray-400" data-translate="bulkImportSub">Copy and paste your message directly below</p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="text-sm font-black text-gray-800">একসাথে পেস্ট করুন (Bulk Import)</h3>
-                            <p class="text-[10px] text-gray-400">পুরো মেসেজটি কপি করে নিচে সরাসরি পেস্ট করে দিন</p>
-                        </div>
+                        <!-- One-Tap Clear Text Box Button -->
+                        <button onclick="clearImportBox()" class="text-xs text-red-500 bg-red-50 hover:bg-red-100 font-extrabold px-3 py-2 rounded-xl active-press transition-all flex items-center gap-1.5 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <span data-translate="btnClear">Clear</span>
+                        </button>
                     </div>
 
-                    <textarea id="bulkPasteInput" rows="6" 
-                              placeholder="১টি মেসেজ সরাসরি পেস্ট করুন...&#10;যেমন:&#10;16-05_2026&#10;AREA : CS. 14&#10;1. 128374 ... 2&#10;2. 110365 ---- 8" 
-                              class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs text-gray-700 font-mono focus:bg-white focus:border-blue-500 transition-all"></textarea>
+                    <textarea id="bulkPasteInput" rows="5" 
+                              placeholder="" 
+                              class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-base text-gray-700 font-mono focus:bg-white focus:border-blue-500 transition-all"></textarea>
                     
-                    <div class="bg-slate-50 p-3 rounded-xl border border-gray-100 text-xs space-y-1.5" id="parsedDetectionResult">
-                        <p class="text-gray-500 font-semibold">ডিটেকশন রেজাল্ট (Auto Detected):</p>
-                        <div class="grid grid-cols-3 gap-2 pt-1 text-[11px] font-bold">
-                            <div class="bg-white p-1.5 rounded border border-gray-100 text-center">
-                                <span class="block text-[8px] text-gray-400 uppercase">Area</span>
-                                <span id="detectArea" class="text-indigo-600">-</span>
+                    <!-- Classic Detected Badges View -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-gray-100 text-xs space-y-2">
+                        <p class="text-gray-500 font-black" data-translate="detectResultTitle">Detection Result (Auto Detected):</p>
+                        <div class="grid grid-cols-3 gap-3 pt-1 text-xs font-bold">
+                            <div class="bg-white p-2 rounded-xl border border-gray-100 text-center shadow-sm">
+                                <span class="block text-[9px] text-gray-400 uppercase font-black tracking-wide" data-translate="detectArea">Area</span>
+                                <span id="detectArea" class="text-indigo-600 text-sm font-black truncate block mt-0.5">-</span>
                             </div>
-                            <div class="bg-white p-1.5 rounded border border-gray-100 text-center">
-                                <span class="block text-[8px] text-gray-400 uppercase">Date</span>
-                                <span id="detectDate" class="text-indigo-600">-</span>
+                            <div class="bg-white p-2 rounded-xl border border-gray-100 text-center shadow-sm">
+                                <span class="block text-[9px] text-gray-400 uppercase font-black tracking-wide" data-translate="detectDate">Date</span>
+                                <span id="detectDate" class="text-indigo-600 text-sm font-black truncate block mt-0.5">-</span>
                             </div>
-                            <div class="bg-white p-1.5 rounded border border-gray-100 text-center">
-                                <span class="block text-[8px] text-gray-400 uppercase">Spools</span>
-                                <span id="detectCount" class="text-emerald-600">0</span>
+                            <div class="bg-white p-2 rounded-xl border border-gray-100 text-center shadow-sm">
+                                <span class="block text-[9px] text-gray-400 uppercase font-black tracking-wide" data-translate="detectSpools">Spools</span>
+                                <span id="detectCount" class="text-emerald-600 text-sm font-black block mt-0.5">0</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex gap-2">
-                        <button onclick="analyzeAndDisplay()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all">
-                            চেক করুন (Analyze)
+                    <!-- Split Buttons Flow (Analyze & Save) -->
+                    <div class="flex gap-2.5">
+                        <button onclick="analyzeAndDisplay()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition-all active-press" data-translate="btnAnalyze">
+                            Analyze
                         </button>
-                        <button onclick="saveBulkData()" id="saveBulkBtn" disabled class="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all">
-                            সেভ করুন (Save All)
+                        <button onclick="saveBulkData()" id="saveBulkBtn" disabled class="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition-all active-press flex items-center justify-center gap-2">
+                            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                            <span id="saveBulkBtnText" data-translate="btnSaveAll">Save All</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-2 mt-3">
-                    <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wide">নিচের ডাটাগুলো ইমপোর্ট হবে (Preview List)</h4>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-2 mt-4 pb-4">
+                    <h4 class="text-xs font-black text-gray-700 uppercase tracking-wider" data-translate="importPreviewHeader">Import Preview List</h4>
                     <div class="max-h-60 overflow-y-auto custom-scroll space-y-2" id="parsedItemsPreviewList">
-                        <p class="text-xs text-gray-400 text-center py-6">কোনো টেক্সট পেস্ট করার পর 'চেক করুন' বাটনে চাপ দিন।</p>
+                        <!-- Preview loaded here -->
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 3: STATS (Analytical Dashboard) -->
-            <div id="statsTab" class="tab-content custom-scroll pb-24">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-3">
-                    <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">Overall Distribution</h3>
-                    <div class="grid grid-cols-3 gap-2 text-center">
-                        <div class="bg-blue-50 p-2.5 rounded-xl">
-                            <p class="text-[10px] text-blue-400 font-extrabold uppercase">Total Area</p>
-                            <p class="text-lg font-black text-blue-800">2</p>
+            <!-- Screen 3: Stats Dashboard -->
+            <div id="statsTab" class="tab-content custom-scroll">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-4">
+                    <h3 class="text-sm font-extrabold text-gray-800 uppercase tracking-wider mb-4" data-translate="statsOverallDistribution">Overall Distribution</h3>
+                    <div class="grid grid-cols-3 gap-3 text-center">
+                        <div class="bg-blue-50 p-3 rounded-2xl">
+                            <p class="text-[10px] text-blue-400 font-extrabold uppercase tracking-wider" data-translate="statsTotalArea">Total Area</p>
+                            <p class="text-xl font-black text-blue-800 mt-1" id="totalAreaCount">0</p>
                         </div>
-                        <div class="bg-indigo-50 p-2.5 rounded-xl">
-                            <p class="text-[10px] text-indigo-400 font-extrabold uppercase">CS. 14 Count</p>
-                            <p class="text-lg font-black text-indigo-800" id="totalCS14Count">0</p>
+                        <div class="bg-indigo-50 p-3 rounded-2xl">
+                            <p class="text-[10px] text-indigo-400 font-extrabold uppercase tracking-wider" data-translate="statsCs14Items">CS. 14 Items</p>
+                            <p class="text-xl font-black text-indigo-800 mt-1" id="totalCS14Count">0</p>
                         </div>
-                        <div class="bg-emerald-50 p-2.5 rounded-xl">
-                            <p class="text-[10px] text-emerald-400 font-extrabold uppercase">CS. 23 Count</p>
-                            <p class="text-lg font-black text-emerald-800" id="totalCS23Count">0</p>
+                        <div class="bg-emerald-50 p-3 rounded-2xl">
+                            <p class="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider" data-translate="statsCs23Items">CS. 23 Items</p>
+                            <p class="text-xl font-black text-emerald-800 mt-1" id="totalCS23Count">0</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                    <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">Spool Frequency (Top Active Spools)</h3>
-                    <div class="space-y-3" id="frequencyChart">
-                        <!-- Bars generated dynamically -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 pb-4">
+                    <h3 class="text-sm font-extrabold text-gray-800 uppercase tracking-wider mb-4" data-translate="statsSpoolFrequency">Spool Usage Frequency</h3>
+                    <div class="space-y-4.5" id="frequencyChart">
+                        <!-- Bars dynamically load -->
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 4: SETTINGS -->
-            <div id="settingsTab" class="tab-content custom-scroll pb-24">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-4 mb-3">
-                    <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide border-b pb-2">App Customization</h3>
+            <!-- Screen 4: Configuration Settings -->
+            <div id="settingsTab" class="tab-content custom-scroll">
+                <!-- Local Storage Safety Status Badge -->
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl shadow-sm mb-4 flex items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold shrink-0">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-emerald-900" data-translate="localSaveTitle">Browser Local Storage Active</h4>
+                        <p class="text-[10px] text-emerald-700 leading-normal" data-translate="localSaveSub">Apnar data safe ache. Mobile/browser bondho korle-o data harabe na!</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-5 mb-4">
+                    <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide border-b pb-2.5" data-translate="settingsCustomization">App Customization</h3>
                     
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-xs font-bold text-gray-700">Auto-pad Spool ID</p>
-                            <p class="text-[10px] text-gray-400">Pad SPL digits with leading zeros (e.g. 1 -> 001)</p>
+                            <p class="text-sm font-extrabold text-gray-700" data-translate="settingsAutoPad">Auto-pad Spool ID</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5" data-translate="settingsAutoPadSub">Pad SPL digits with leading zeros (e.g. 1 -> 001)</p>
                         </div>
-                        <input type="checkbox" id="settingPad" checked class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                        <input type="checkbox" id="settingPad" checked class="w-5 h-5 text-blue-600 rounded-lg border-gray-300 focus:ring-blue-500 active-press">
                     </div>
 
                     <div class="flex justify-between items-center pt-2">
                         <div>
-                            <p class="text-xs font-bold text-gray-700">Haptic Feedback Simulation</p>
-                            <p class="text-[10px] text-gray-400">Light flash confirmation on buttons</p>
+                            <p class="text-sm font-extrabold text-gray-700" data-translate="settingsHaptic">Haptic Feedback Simulation</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5" data-translate="settingsHapticSub">Light flash confirmation on buttons</p>
                         </div>
-                        <input type="checkbox" id="settingHaptic" checked class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                        <input type="checkbox" id="settingHaptic" checked class="w-5 h-5 text-blue-600 rounded-lg border-gray-300 focus:ring-blue-500 active-press">
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
-                    <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide mb-2">Export & Database Reset</h3>
-                    <button onclick="exportCSV()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                        Copy Raw Data CSV
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3 pb-4">
+                    <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide mb-2" data-translate="settingsExportSection">Export & Database Reset</h3>
+                    <button onclick="exportCSV()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-black py-3.5 rounded-2xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2.5 active-press shadow-sm">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        <span data-translate="settingsCopyCsv">Copy Raw Data CSV</span>
                     </button>
-                    <button onclick="clearFullDatabase()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 border border-red-200">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        Clear Full Database
+                    <button onclick="clearFullDatabase()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-black py-3.5 rounded-2xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2.5 border border-red-200 active-press shadow-sm">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        <span data-translate="settingsClearDb">Clear Full Database</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Float Action Button (Quick Add One) -->
-        <button id="fabAdd" class="absolute bottom-20 right-4 w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-all z-40">
-            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <!-- Floating Quick-Add Button (Raised and oversized for Abbu's comfort) -->
+        <button id="fabAdd" class="absolute bottom-28 right-6 w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center shadow-2xl active-press transition-all z-40 border-4 border-white/20">
+            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         </button>
 
         <!-- Quick Add Modal Overlay -->
-        <div id="addModal" class="hidden absolute inset-0 bg-black/50 z-50 flex items-end justify-center">
-            <div class="bg-white w-full rounded-t-[2rem] p-5 pb-8 space-y-4 animate-slideIn">
-                <div class="flex justify-between items-center border-b pb-3">
-                    <h3 class="text-base font-extrabold text-gray-900">Add New Spool Entry</h3>
-                    <button id="closeModal" class="p-1 rounded-full bg-gray-100 text-gray-500">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div id="addModal" class="hidden absolute inset-0 bg-black/60 z-50 flex items-end justify-center">
+            <div class="bg-white w-full rounded-t-[2.5rem] p-6 pb-12 space-y-5 animate-slideIn">
+                <div class="flex justify-between items-center border-b pb-3.5">
+                    <h3 class="text-lg font-black text-gray-900" data-translate="addModalTitle">Add New Spool Entry</h3>
+                    <button id="closeModal" class="p-2 rounded-full bg-gray-100 text-gray-500 active-press">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-4">
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Select Area</label>
-                        <select id="modalArea" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-700">
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1.5" data-translate="addModalSelectArea">Select Area</label>
+                        <select id="modalArea" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-2xl text-base font-bold text-gray-700">
                             <option value="CS. 14">CS. 14</option>
                             <option value="CS. 23">CS. 23</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">EB Number</label>
-                        <input type="number" id="modalEB" placeholder="e.g. 128374" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-semibold text-gray-800">
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1.5" data-translate="addModalEb">EB Number</label>
+                        <input type="number" id="modalEB" placeholder="e.g. 128374" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-2xl text-base font-bold text-gray-800">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Spool Number (SPL)</label>
-                        <input type="number" id="modalSPL" placeholder="e.g. 2" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-semibold text-gray-800">
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1.5" data-translate="addModalSpl">Spool Number (SPL)</label>
+                        <input type="number" id="modalSPL" placeholder="e.g. 2" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-2xl text-base font-bold text-gray-800">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Date</label>
-                        <input type="date" id="modalDate" value="2026-05-16" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-semibold text-gray-800">
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1.5" data-translate="addModalDate">Date</label>
+                        <input type="date" id="modalDate" value="2026-05-16" class="w-full bg-gray-50 border border-gray-200 p-3.5 rounded-2xl text-base font-bold text-gray-800">
                     </div>
                 </div>
 
-                <button id="saveModalBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-xl text-xs tracking-wider uppercase transition-all shadow-md">
+                <button id="saveModalBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl text-sm tracking-wider uppercase transition-all shadow-md active-press" data-translate="addModalSave">
                     Save Record
                 </button>
             </div>
         </div>
 
-        <!-- Notification Toast -->
-        <div id="toast" class="opacity-0 pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 bg-gray-900/90 text-white text-xs px-4 py-2.5 rounded-full font-bold shadow-lg transition-all duration-300 z-50 flex items-center gap-1.5">
+        <!-- Custom Safe Confirm Reset Modal -->
+        <div id="confirmResetModal" class="hidden absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 animate-slideIn">
+                <h3 class="text-base font-extrabold text-gray-900" data-translate="confirmResetTitle">Database Reset</h3>
+                <p class="text-xs text-gray-500" data-translate="confirmResetMsg">Are you sure you want to clear all data? This cannot be undone.</p>
+                <div class="flex gap-2.5 pt-2">
+                    <button id="cancelResetBtn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all active-press" data-translate="confirmResetCancel">
+                        Cancel
+                    </button>
+                    <button id="confirmResetBtn" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition-all active-press" data-translate="confirmResetDelete">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heartwarming Welcome Pop-up Modal (Triggers on entering app every single time) -->
+        <div id="welcomeModal" class="hidden absolute inset-0 bg-black/85 z-50 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-sm rounded-[2.5rem] p-6 space-y-5 animate-slideIn text-center border border-gray-100 shadow-2xl relative overflow-hidden">
+                <!-- Golden header strip -->
+                <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 via-indigo-600 to-indigo-800"></div>
+                
+                <!-- Bismillahir Rahmanir Rahim Block (Abober khushir jonno) -->
+                <div class="pt-2 text-center space-y-1">
+                    <p class="text-xl font-serif text-slate-800 font-extrabold">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+                    <p class="text-xs font-black text-blue-600 tracking-wider">Bismillahir Rahmanir Rahim</p>
+                </div>
+                
+                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mx-auto text-blue-600 border-2 border-blue-100 shadow-inner">
+                    <!-- Heart Welcoming Icon -->
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                </div>
+                
+                <div class="space-y-2">
+                    <h2 class="text-xl font-black text-gray-900 leading-tight">Assalamu Alaikum, <br><span class="text-blue-600 font-extrabold text-2xl">MD ISHAQUE ALI</span></h2>
+                    <!-- Dynamic Time of Day Greeting Badge -->
+                    <p class="text-sm text-indigo-700 font-black tracking-wide uppercase flex items-center justify-center gap-1.5 bg-indigo-50 px-4 py-2 rounded-full w-fit mx-auto shadow-sm" id="welcomeTimeGreeting">
+                        Good Morning!
+                    </p>
+                    
+                    <p class="text-sm text-slate-700 font-bold tracking-wide uppercase flex items-center justify-center gap-1 bg-slate-100 px-3 py-1.5 rounded-full w-fit mx-auto" id="welcomeDate">
+                        Monday, May 18, 2026
+                    </p>
+                    <p class="text-sm text-gray-500 pt-1.5 font-medium leading-relaxed" data-translate="welcomeSub">Apnar shob spool data safe ache. Ajker kajer jonno ready to?</p>
+                </div>
+                
+                <!-- Current status card inside welcome modal -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex justify-between items-center">
+                    <span class="text-xs font-black text-slate-400 uppercase tracking-wider" data-translate="statTotalItemsLabel">Total Saved Spools</span>
+                    <span class="text-xl font-black text-indigo-900 bg-white px-3.5 py-1 rounded-xl shadow-sm border border-slate-100" id="welcomeTotalCount">0</span>
+                </div>
+
+                <button id="closeWelcomeBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black py-4 rounded-2xl text-xs tracking-wider uppercase transition-all shadow-md active-press" data-translate="welcomeStartBtn">
+                    Kaj Shuru Korun (Start Work)
+                </button>
+            </div>
+        </div>
+
+        <!-- Application Toaster Notification -->
+        <div id="toast" class="opacity-0 pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 bg-gray-900/95 text-white text-xs px-4 py-3 rounded-full font-bold shadow-lg transition-all duration-300 z-50 flex items-center gap-1.5">
             <span id="toastText">Action successful!</span>
         </div>
 
-        <!-- Tab Bar Navigation (Fixed Bottom Layout) -->
-        <nav class="bottom-nav bg-white border-t border-gray-200 grid grid-cols-4 h-16 shrink-0 z-40 mt-auto">
-            <button onclick="switchTab('home')" id="tab-btn-home" class="flex flex-col items-center justify-center active-tab">
-                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                <span class="text-[9px] mt-1 font-bold">HOME</span>
+        <!-- Bottom Tabs (Oversized comfortable tap heights) -->
+        <nav class="bottom-nav bg-white border-t border-gray-200 grid grid-cols-4 shrink-0">
+            <button onclick="switchTab('home')" id="tab-btn-home" class="flex flex-col items-center justify-center active-tab active-press">
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                <span class="text-xs mt-1 font-black">HOME</span>
             </button>
-            <button onclick="switchTab('import')" id="tab-btn-import" class="flex flex-col items-center justify-center text-gray-400">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                <span class="text-[9px] mt-1 font-bold">IMPORT</span>
+            <button onclick="switchTab('import')" id="tab-btn-import" class="flex flex-col items-center justify-center text-gray-400 active-press">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span class="text-xs mt-1 font-black">IMPORT</span>
             </button>
-            <button onclick="switchTab('stats')" id="tab-btn-stats" class="flex flex-col items-center justify-center text-gray-400">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                <span class="text-[9px] mt-1 font-bold">STATS</span>
+            <button onclick="switchTab('stats')" id="tab-btn-stats" class="flex flex-col items-center justify-center text-gray-400 active-press">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span class="text-xs mt-1 font-black">STATS</span>
             </button>
-            <button onclick="switchTab('settings')" id="tab-btn-settings" class="flex flex-col items-center justify-center text-gray-400">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span class="text-[9px] mt-1 font-bold">CONFIG</span>
+            <button onclick="switchTab('settings')" id="tab-btn-settings" class="flex flex-col items-center justify-center text-gray-400 active-press">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31(2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="text-xs mt-1 font-black">CONFIG</span>
             </button>
         </nav>
     </div>
 
     <script>
-        const initialData = [
-            // --- AREA: CS. 23 (32 Original Records) ---
-            { date: "2026-05-16", area: "CS. 23", eb: "128357", spl: "001" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128291", spl: "002" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128335", spl: "002" },
-            { date: "2026-05-16", area: "CS. 23", eb: "285511", spl: "005" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128395", spl: "003" },
-            { date: "2026-05-16", area: "CS. 23", eb: "120727", spl: "002" },
-            { date: "2026-05-16", area: "CS. 23", eb: "285517", spl: "005" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128388", spl: "004" },
-            { date: "2026-05-16", area: "CS. 23", eb: "108579", spl: "001" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128410", spl: "003" },
-            { date: "2026-05-16", area: "CS. 23", eb: "285678", spl: "007" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128412", spl: "003" },
-            { date: "2026-05-16", area: "CS. 23", eb: "290567", spl: "006" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128367", spl: "005" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128344", spl: "001" },
-            { date: "2026-05-16", area: "CS. 23", eb: "285688", spl: "003" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128346", spl: "002" },
-            { date: "2026-05-16", area: "CS. 23", eb: "125259", spl: "003" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128279", spl: "001" },
-            { date: "2026-05-16", area: "CS. 23", eb: "290488", spl: "002" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128000", spl: "002" },
-            { date: "2026-05-16", area: "CS. 23", eb: "285756", spl: "002" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128331", spl: "001" },
-            { date: "2026-05-16", area: "CS. 23", eb: "128371", spl: "003" },
-            { date: "2026-05-16", area: "CS. 23", eb: "285510", spl: "001" },
-            { date: "2026-05-16", area: "CS. 23", eb: "285512", spl: "005" },
-            { date: "2026-05-16", area: "CS. 23", eb: "285692", spl: "005" },
-            { date: "2026-05-16", area: "CS. 23", eb: "285516", spl: "005" },
-            { date: "2026-05-16", area: "CS. 23", eb: "127775", spl: "002" },
-            { date: "2026-05-16", area: "CS. 23", eb: "127552", spl: "006" },
-            { date: "2026-05-16", area: "CS. 23", eb: "287501", spl: "001" },
-            { date: "2026-05-16", area: "CS. 23", eb: "125322", spl: "002" },
+        // Database completely clean initial empty state
+        const initialData = [];
 
-            // --- AREA: CS. 14 (130 Original Records) ---
-            { date: "2026-05-16", area: "CS. 14", eb: "128374", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "110365", spl: "008" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128337", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128007", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285686", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128452", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "200503", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128002", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288730", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288726", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "011" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290209", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288730", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290503", spl: "006" },
-            { date: "2026-05-16", area: "CS. 14", eb: "287687", spl: "007" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127999", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128455", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128457", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109279", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290318", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128142", spl: "007" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128432", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109358", spl: "006" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290503", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128393", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128266", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285753", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285653", spl: "006" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128334", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109497", spl: "004" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127582", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285903", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109762", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285692", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "185115", spl: "017" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128025", spl: "102" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285529", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290348", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "121519", spl: "004" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127622", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288189", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127758", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128311", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "287155", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285683", spl: "007" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290573", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109975", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285714", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127747", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285682", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285517", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128423", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285513", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285513", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285753", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288129", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127194", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288184", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290347", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "1244812", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "124396", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128423", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285678", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109358", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285748", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290347", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127763", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128337", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285749", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290352", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288461", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127410", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285889", spl: "004" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285711", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128368", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128334", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285651", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127607", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128176", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128336", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286741", spl: "004" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290348", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285893", spl: "008" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285733", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127577", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "014" },
-            { date: "2026-05-16", area: "CS. 14", eb: "124915", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109500", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290623", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "110640", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127202", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109197", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290624", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285733", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127577", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "014" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285924", spl: "007" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286409", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "110365", spl: "007" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127202", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286832", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "125128", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109197", spl: "004" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127768", spl: "008" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109492", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285683", spl: "005" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128523", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285513", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290492", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288733", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "2854514", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288733", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "124813", spl: "006" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128279", spl: "004" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128402", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127811", spl: "004" },
-            { date: "2026-05-16", area: "CS. 14", eb: "128386", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "290232", spl: "007" },
-            { date: "2026-05-16", area: "CS. 14", eb: "127228", spl: "007" },
-            { date: "2026-05-16", area: "CS. 14", eb: "111003", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109247", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285924", spl: "003" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109140", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "286619", spl: "010" },
-            { date: "2026-05-16", area: "CS. 14", eb: "109447", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "288132", spl: "002" },
-            { date: "2026-05-16", area: "CS. 14", eb: "190358", spl: "004" }
-        ];
+        // LocalStorage fallback check and load (Safety wrapped)
+        let localDataStore = [];
+        try {
+            localDataStore = JSON.parse(localStorage.getItem('spool_pro_database')) || initialData;
+        } catch (e) {
+            console.error("Local storage error on load:", e);
+            localDataStore = initialData;
+        }
 
-        // System storage initialization
-        let localDataStore = JSON.parse(localStorage.getItem('spool_pro_database')) || initialData;
         let selectedArea = 'ALL';
         let analyzedTempItems = []; 
+        let currentLang = localStorage.getItem('spool_app_lang') || 'en';
 
-        // HTML elements cache
+        // Translation Maps - Banglish (Latin) used for BN language
+        const translations = {
+            en: {
+                title: "Production Log Pro",
+                subtitlePrefix: "AREA: ",
+                allAreas: "ALL AREAS",
+                spoolsSuffix: " SPOOLS",
+                itemsSuffix: " ITEMS",
+                searchPlaceholder: "Search EB or Spool (SPL)...",
+                shareBtn: "Share",
+                statActiveAreaLabel: "Active Filter",
+                statTotalItemsLabel: "Total Items",
+                statAllAreas: "All Areas",
+                noRecordsFound: "No Records Found",
+                noRecordsSub: "Try changing your filters or add/import entries.",
+                bulkImportTitle: "Bulk Import (Paste)",
+                bulkImportSub: "Copy and paste your message directly below",
+                bulkPlaceholder: "Paste your WhatsApp/Chat message here...\nExample:\n16-05_2026\nAREA : CS. 23\n14) 290540---6\n1. 128374 ... 2",
+                detectResultTitle: "Detection Result (Auto Detected):",
+                detectArea: "Area",
+                detectDate: "Date",
+                detectSpools: "Spools",
+                btnAnalyze: "Analyze / চেক করুন",
+                btnSaveAll: "Save All / সেভ করুন",
+                btnSaveSpoolsCount: "Save {count} Spools",
+                importPreviewHeader: "Import Preview List",
+                importPreviewEmpty: "Preview list will load when you click 'Analyze'.",
+                importPreviewError: "No data detected from message. Please use dot (...) or dash (----) format.",
+                statsOverallDistribution: "Overall Distribution",
+                statsTotalArea: "Total Area",
+                statsCs14Items: "CS. 14 Items",
+                statsCs23Items: "CS. 23 Items",
+                statsSpoolFrequency: "Spool Usage Frequency",
+                statsNoAnalysis: "No analysis available.",
+                settingsCustomization: "App Customization",
+                settingsAutoPad: "Auto-pad Spool ID",
+                settingsAutoPadSub: "Pad SPL digits with leading zeros (e.g. 1 -> 001)",
+                settingsHaptic: "Haptic Feedback Simulation",
+                settingsHapticSub: "Light flash confirmation on buttons",
+                settingsExportSection: "Export & Database Reset",
+                settingsCopyCsv: "Copy Raw Data CSV",
+                settingsClearDb: "Clear Full Database",
+                addModalTitle: "Add New Spool Entry",
+                addModalSelectArea: "Select Area",
+                addModalEb: "EB Number",
+                addModalSpl: "Spool Number (SPL)",
+                addModalDate: "Date",
+                addModalSave: "Save Record",
+                confirmResetTitle: "Database Reset",
+                confirmResetMsg: "Are you sure you want to clear all data? This cannot be undone.",
+                confirmResetCancel: "Cancel",
+                confirmResetDelete: "Delete",
+                toastNoDataToImport: "Paste box is empty!",
+                toastParsedSuccess: "Detected {count} records!",
+                toastSavedSuccess: "{count} records successfully saved to database! ✅",
+                toastNoDataToShare: "No data to share!",
+                toastCopiedClipboard: "Copied to clipboard! 📋",
+                toastAllFieldsRequired: "Please fill all fields!",
+                toastRecordSaved: "Record saved successfully! ✅",
+                toastCsvCopied: "Database copied in CSV!",
+                toastDbCleared: "All data deleted successfully! 🧹",
+                btnClear: "Clear",
+                localSaveTitle: "Browser Local Storage Active",
+                localSaveSub: "Your data is safe. Closing browser or mobile will not delete your entries!",
+                clearFilterBtn: "Clear Date Filter",
+                foundOnOtherDates: "{count} records found on other dates!",
+                foundOnOtherDatesSub: "Apnar select kora date filter-er baire ei data ache.",
+                welcomeHeader: "Assalamu Alaikum, MD ISHAQUE ALI!",
+                welcomeSub: "Apnar shob spool data safe ache. Ajker kajer jonno ready to?",
+                welcomeStartBtn: "Kaj Shuru Korun (Start Work)"
+            },
+            bn: {
+                title: "Production Log Pro",
+                subtitlePrefix: "Area: ",
+                allAreas: "Shob Area",
+                spoolsSuffix: " Ti Spool",
+                itemsSuffix: " Ti Record",
+                searchPlaceholder: "EB otsbba Spool (SPL) diye search korun...",
+                shareBtn: "Share",
+                statActiveAreaLabel: "Active Filter",
+                statTotalItemsLabel: "Mot Record",
+                statAllAreas: "Shob Area",
+                noRecordsFound: "Kono Record Paoya Jayni",
+                noRecordsSub: "Anugrah kore filter poriborton korun..." ,
+                bulkImportTitle: "Ekshathe Paste Korun",
+                bulkImportSub: "Paste korar por 'Check Korun' botone chap din",
+                bulkPlaceholder: "WhatsApp ba chat message-ti shorasori paste korun...\nJemon:\n16-05_2026\nAREA : CS. 23\n14) 290540---6\n1. 128374 ... 2",
+                detectResultTitle: "Detection Result (Auto Detected):",
+                detectArea: "Area",
+                detectDate: "Tarikh",
+                detectSpools: "Spool",
+                btnAnalyze: "Check Korun (Analyze)",
+                btnSaveAll: "Save Korun (Save All)",
+                btnSaveSpoolsCount: "Save Korun ({count}ti Spool)",
+                importPreviewHeader: "Import Preview List",
+                importPreviewEmpty: "Text paste kore 'Check Korun' botone chap dile ekhane list ashbe.",
+                importPreviewError: "Message theke kono data detect kora jayni. Anugrah kore dot (...) ba dash (----) format bebohar korun.",
+                statsOverallDistribution: "Sarbik Distribution",
+                statsTotalArea: "Mot Area",
+                statsCs14Items: "CS. 14 Record",
+                statsCs23Items: "CS. 23 Record",
+                statsSpoolFrequency: "Spool Usage Rate",
+                statsNoAnalysis: "Bishleshon korar moto data nei.",
+                settingsCustomization: "App Customization",
+                settingsAutoPad: "Spool ID Padding",
+                settingsAutoPadSub: "Spool number-er agey shunno boshun (Jemon: 1 -> 001)",
+                settingsHaptic: "Haptic Vibration",
+                settingsHapticSub: "Button touch korle light flash effect",
+                settingsExportSection: "Export o Database Reset",
+                settingsCopyCsv: "Raw Data Copy Korun (CSV)",
+                settingsClearDb: "Shompurno Database Muchhun",
+                addModalTitle: "Notun Spool Entry Jog Korun",
+                addModalSelectArea: "Area Nirbachon Korun",
+                addModalEb: "EB Number",
+                addModalSpl: "Spool Number (SPL)",
+                addModalDate: "Tarikh",
+                addModalSave: "Save Korun",
+                confirmResetTitle: "Database Reset",
+                confirmResetMsg: "Apni ki nishchitbhabe shob data muche felte chan? Eti ar phiriye ana shombhob hobe na.",
+                confirmResetCancel: "Batil",
+                confirmResetDelete: "Muche Felun",
+                toastNoDataToImport: "Paste korar box-ti phaka!",
+                toastParsedSuccess: "{count} Ti Data Sanakt hoyeche!",
+                toastSavedSuccess: "{count} Ti Record Shofolbhabe Save Hoyeche! ✅",
+                toastNoDataToShare: "Share korar moto kono data nei!",
+                toastCopiedClipboard: "Clipboard-e copy kora hoyeche! 📋",
+                toastAllFieldsRequired: "Anugrah kore shob ghor puron korun!",
+                toastRecordSaved: "Record shofolbhabe save hoyeche! ✅",
+                toastCsvCopied: "Database CSV format-e copy kora hoyeche!",
+                toastDbCleared: "Shob data muche fela hoyeche! 🧹",
+                btnClear: "Muchhun",
+                localSaveTitle: "Browser Local Storage Active",
+                localSaveSub: "Apnar data safe ache. Mobile/browser bondho korle-o data harabe na!",
+                clearFilterBtn: "Date Filter Clear Korun",
+                foundOnOtherDates: "Onno Tarikh-e {count} ti record paoya gese!",
+                foundOnOtherDatesSub: "Apnar select kora date filter-er baire ei data ache.",
+                welcomeHeader: "Assalamu Alaikum, MD ISHAQUE ALI!",
+                welcomeSub: "Apnar shob spool data safe ache. Ajker kajer jonno ready to?",
+                welcomeStartBtn: "Kaj Shuru Korun (Start Work)"
+            }
+        };
+
+        // DOM cache selectors
         const searchInput = document.getElementById('searchInput');
         const dateInput = document.getElementById('dateInput');
         const clearDate = document.getElementById('clearDate');
         const listView = document.getElementById('listView');
+        const bulkPasteInput = document.getElementById('bulkPasteInput');
         
-        // Modal quick-adds
+        // Modals & overlay elements
         const fabAdd = document.getElementById('fabAdd');
         const addModal = document.getElementById('addModal');
         const closeModal = document.getElementById('closeModal');
@@ -534,22 +626,28 @@
         const toast = document.getElementById('toast');
         const toastText = document.getElementById('toastText');
 
-        // Config items
+        // Config settings
         const settingPad = document.getElementById('settingPad');
         const settingHaptic = document.getElementById('settingHaptic');
 
+        // Safe Unicode mathematical character mapper (WhatsApp styles filter with fixed typos)
         function sanitizeUnicode(text) {
-            // Converts mathematical bold text or copy-paste rich symbols to normal text
             const unicodeMap = {
+                '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
                 '𝟎': '0', '𝟏': '1', '𝟐': '2', '𝟑': '3', '𝟒': '4', '𝟓': '5', '𝟔': '6', '𝟕': '7', '𝟖': '8', '𝟗': '9',
+                '𝟘': '0', '𝟙': '1', '𝟚': '2', '𝟛': '3', '𝟜': '4', '𝟝': '5', '𝟞': '6', '𝟟': '7', '𝟠': '8', '𝟡': '9',
+                '𝟢': '0', '𝟣': '1', '𝟤': '2', '𝟥': '3', '𝟦': '4', '𝟧': '5', '𝟨': '6', '𝟩': '7', '𝟪': '8', '𝟫': '9',
+                '𝟬': '0', '𝟭': '1', '𝟮': '2', '𝟯': '3', '𝟰': '4', '𝟱': '5', '𝟲': '6', '𝟳': '7', '𝟴': '8', '𝟵': '9',
+                '𝟶': '0', '𝟷': '1', '𝟸': '2', '𝟹': '3', '𝟺': '4', '𝟻': '5', '𝟼': '6', '𝟽': '7', '𝟾': '8', '𝟿': '9',
+                
                 '𝐀': 'A', '𝐁': 'B', '𝐂': 'C', '𝐃': 'D', '𝐄': 'E', '𝐅': 'F', '𝐆': 'G', '𝐇': 'H', '𝐈': 'I', '𝐉': 'J',
                 '𝐊': 'K', '𝐋': 'L', '𝐌': 'M', '𝐍': 'N', '𝐎': 'O', '𝐏': 'P', '𝐐': 'Q', '𝐑': 'R', '𝐒': 'S', '𝐓': 'T',
-                '𝐔': 'U', '𝐕': 'V', '𝐖': 'W', '𝐗': 'X', '𝐘': 'Y', '𝐙': 'Z',
+                '🇺': 'U', '𝐕': 'V', '𝐖': 'W', '𝐗': 'X', '𝐘': 'Y', '𝐙': 'Z',
                 '𝐚': 'a', '𝐛': 'b', '𝐜': 'c', '𝐝': 'd', '𝐞': 'e', '𝐟': 'f', '𝐠': 'g', '𝐡': 'h', '𝐢': 'i', '𝐣': 'j',
                 '𝐤': 'k', '𝐥': 'l', '𝐦': 'm', '𝐧': 'n', '𝐨': 'o', '𝐩': 'p', '𝐪': 'q', '𝐫': 'r', '𝐬': 's', '𝐭': 't',
                 '𝐮': 'u', '𝐯': 'v', '𝐰': 'w', '𝐱': 'x', '𝐲': 'y', '𝐳': 'z'
             };
-            return text.split('').map(char => unicodeMap[char] || char).join('');
+            return [...text].map(char => unicodeMap[char] || char).join('');
         }
 
         function triggerHapticFeedback() {
@@ -559,8 +657,11 @@
             }
         }
 
-        function showToast(text) {
-            toastText.textContent = text;
+        function showToast(textKey, fallbackValue = "") {
+            const currentTrans = translations[currentLang];
+            let msg = currentTrans[textKey] || fallbackValue || textKey;
+            
+            toastText.textContent = msg;
             toast.classList.remove('opacity-0', 'pointer-events-none');
             toast.classList.add('opacity-100');
             setTimeout(() => {
@@ -569,36 +670,107 @@
             }, 2000);
         }
 
-        function setAreaFilter(area) {
-            selectedArea = area;
+        // Language toggle controller
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('spool_app_lang', lang);
             triggerHapticFeedback();
             
-            const pills = {
-                'ALL': 'pill-ALL',
-                'CS. 14': 'pill-CS14',
-                'CS. 23': 'pill-CS23'
-            };
+            const btnEn = document.getElementById('lang-btn-en');
+            const btnBn = document.getElementById('lang-btn-bn');
+            
+            if (lang === 'en') {
+                btnEn.className = "px-2.5 py-1.5 rounded-md bg-white text-blue-900 shadow-sm transition-all";
+                btnBn.className = "px-2.5 py-1.5 rounded-md text-white/80 hover:text-white transition-all";
+            } else {
+                btnBn.className = "px-2.5 py-1.5 rounded-md bg-white text-blue-900 shadow-sm transition-all";
+                btnEn.className = "px-2.5 py-1.5 rounded-md text-white/80 hover:text-white transition-all";
+            }
 
-            Object.keys(pills).forEach(key => {
-                const el = document.getElementById(pills[key]);
-                if (key === area) {
-                    el.className = "shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white text-blue-800 border border-white/40 transition-all shadow-md";
-                } else {
-                    el.className = "shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-all";
+            translateUI();
+            renderData();
+        }
+
+        function translateUI() {
+            const currentTrans = translations[currentLang];
+            
+            // Translate static DOM structures
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (currentTrans[key]) {
+                    el.textContent = currentTrans[key];
                 }
             });
 
-            document.getElementById('areaSubtitle').textContent = `AREA: ${area}`;
-            document.getElementById('statActiveArea').textContent = area === 'ALL' ? 'All Areas' : area;
-            document.getElementById('statIconArea').textContent = area === 'ALL' ? 'ALL' : area.replace(/\s+/g, '');
+            // Placeholders
+            searchInput.placeholder = currentTrans.searchPlaceholder;
+            bulkPasteInput.placeholder = currentTrans.bulkPlaceholder;
 
+            // Header labels setup
+            const displayArea = selectedArea === 'ALL' ? currentTrans.statAllAreas : selectedArea;
+            document.getElementById('areaSubtitle').textContent = currentTrans.subtitlePrefix + (selectedArea === 'ALL' ? 'ALL' : selectedArea);
+            document.getElementById('statActiveArea').textContent = displayArea;
+
+            updateSaveButtonText();
+        }
+
+        // Dynamic load of area pills directly from current Local Storage entries
+        function updateDynamicAreaPills() {
+            const container = document.getElementById('areaPillsContainer');
+            const currentTrans = translations[currentLang];
+            const uniqueAreas = [...new Set(localDataStore.map(item => item.area))].sort();
+            
+            if (selectedArea !== 'ALL' && !uniqueAreas.includes(selectedArea)) {
+                selectedArea = 'ALL';
+                document.getElementById('areaSubtitle').textContent = currentTrans.subtitlePrefix + 'ALL';
+                document.getElementById('statActiveArea').textContent = currentTrans.statAllAreas;
+                document.getElementById('statIconArea').textContent = 'ALL';
+            }
+
+            let pillsHtml = `
+                <button onclick="setAreaFilter('ALL')" id="pill-ALL" class="shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-full transition-all active-press ${selectedArea === 'ALL' ? 'bg-white text-blue-800 border border-white/40 shadow-md' : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'}">
+                    ${currentTrans.allAreas}
+                </button>
+            `;
+
+            uniqueAreas.forEach(area => {
+                const isActive = selectedArea === area;
+                const pillId = `pill-${area.replace(/[^a-zA-Z0-9]/g, '')}`;
+                pillsHtml += `
+                    <button onclick="setAreaFilter('${area}')" id="${pillId}" class="shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-full transition-all active-press ${isActive ? 'bg-white text-blue-800 border border-white/40 shadow-md' : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'}">
+                        ${area}
+                    </button>
+                `;
+            });
+
+            container.innerHTML = pillsHtml;
+        }
+
+        function setAreaFilter(area) {
+            selectedArea = area;
+            triggerHapticFeedback();
+            const currentTrans = translations[currentLang];
+            document.getElementById('areaSubtitle').textContent = currentTrans.subtitlePrefix + (area === 'ALL' ? 'ALL' : area);
+            document.getElementById('statActiveArea').textContent = area === 'ALL' ? currentTrans.statAllAreas : area;
+            document.getElementById('statIconArea').textContent = area === 'ALL' ? 'ALL' : area.replace(/\s+/g, '');
+            renderData();
+        }
+
+        // ONE-TAP DATE RESET FUNCTION FOR INTELLIGENT SEARCH
+        function clearDateFilterAndSearch() {
+            triggerHapticFeedback();
+            dateInput.value = "";
             renderData();
         }
 
         function renderData() {
-            const searchText = searchInput.value.toLowerCase().trim();
-            const selectedDate = dateInput.value;
+            updateDynamicAreaPills();
 
+            const searchText = sanitizeUnicode(searchInput.value).toLowerCase().trim();
+            const selectedDate = dateInput.value;
+            const currentTrans = translations[currentLang];
+
+            // 1. Render based on active filters
             const filtered = localDataStore.filter(item => {
                 const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
                 const matchesDate = (!selectedDate || item.date === selectedDate);
@@ -612,43 +784,78 @@
             });
 
             document.getElementById('statCount').textContent = filtered.length;
-            document.getElementById('totalCountBadge').textContent = `${filtered.length} ITEMS`;
+            document.getElementById('totalCountBadge').textContent = filtered.length + currentTrans.spoolsSuffix;
 
             if (filtered.length === 0) {
-                listView.innerHTML = `
-                    <div class="text-center py-16 bg-white rounded-2xl border border-gray-100 p-6">
-                        <div class="bg-gray-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                // INTELLIGENT SEARCH CHECK: What if the item is present on other dates but hidden due to Date Filter?
+                let globalFiltered = [];
+                if (selectedDate && searchText) {
+                    globalFiltered = localDataStore.filter(item => {
+                        const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
+                        const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                        return matchesArea && (
+                            item.eb.toLowerCase().includes(searchText) || 
+                            formattedSpl.toLowerCase().includes(searchText)
+                        );
+                    });
+                }
+
+                if (globalFiltered.length > 0) {
+                    const messageTitle = currentTrans.foundOnOtherDates.replace('{count}', globalFiltered.length);
+                    listView.innerHTML = `
+                        <div class="text-center py-12 bg-white rounded-2xl border border-gray-100 p-6 animate-slideIn">
+                            <div class="bg-amber-50 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-600">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <p class="text-gray-800 text-sm font-bold">${messageTitle}</p>
+                            <p class="text-[11px] text-gray-400 mt-1">${currentTrans.foundOnOtherDatesSub}</p>
+                            <button onclick="clearDateFilterAndSearch()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-all active-press">
+                                ${currentTrans.clearFilterBtn}
+                            </button>
                         </div>
-                        <p class="text-gray-600 text-sm font-bold">No Records Found</p>
-                        <p class="text-[11px] text-gray-400 mt-1">Try changing your filters or add/import entries.</p>
-                    </div>
-                `;
+                    `;
+                } else {
+                    listView.innerHTML = `
+                        <div class="text-center py-16 bg-white rounded-2xl border border-gray-100 p-6 animate-slideIn">
+                            <div class="bg-gray-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            </div>
+                            <p class="text-gray-600 text-sm font-bold">${currentTrans.noRecordsFound}</p>
+                            <p class="text-[11px] text-gray-400 mt-1">${currentTrans.noRecordsSub}</p>
+                        </div>
+                    `;
+                }
                 return;
             }
 
             listView.innerHTML = filtered.map((item, idx) => {
-                const isCS14 = item.area === 'CS. 14';
                 const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
                 return `
                     <div class="item-card bg-white p-3.5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center active:scale-[0.98] transition-all">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 ${isCS14 ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-blue-50 text-blue-700 border-blue-100'} border rounded-xl flex items-center justify-center font-black text-sm">
-                                ${formattedSpl.slice(-3)}
+                        <!-- Left: Serial Index (1, 2, 3...) -->
+                        <div class="flex items-center gap-3 shrink-0">
+                            <div class="w-11 h-11 bg-blue-50 text-blue-700 border border-blue-100 rounded-2xl flex items-center justify-center font-black text-base shadow-sm">
+                                ${idx + 1}
                             </div>
                             <div>
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-[9px] ${isCS14 ? 'bg-indigo-600' : 'bg-blue-600'} text-white px-1.5 py-0.5 rounded font-bold">${item.area}</span>
-                                    <span class="text-[9px] text-gray-400 font-semibold uppercase">ID: #${filtered.length - idx}</span>
-                                </div>
-                                <p class="text-gray-800 font-extrabold text-base leading-tight mt-1">${item.eb}</p>
+                                <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-lg font-bold">${item.area}</span>
+                                <p class="text-gray-800 font-black text-xl leading-tight mt-1">${item.eb}</p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <span class="bg-gray-800 text-white text-[9px] px-2 py-1 rounded-lg font-black tracking-widest">
+
+                        <!-- Middle: Highlighted Date Badge (Perfect horizontal alignment & larger readability) -->
+                        <div class="flex-grow flex justify-center px-1">
+                            <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs px-3 py-1.5 rounded-full font-black flex items-center gap-1 shadow-sm shrink-0">
+                                <svg class="w-4 h-4 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                ${item.date}
+                            </span>
+                        </div>
+
+                        <!-- Right: Spool SPL badge (Oversized) -->
+                        <div class="text-right shrink-0">
+                            <span class="bg-gray-800 text-white text-xs px-3.5 py-2 rounded-xl font-black tracking-widest block shadow-sm">
                                 SPL:${formattedSpl}
                             </span>
-                            <p class="text-[9px] text-gray-400 mt-1.5 font-semibold">${item.date}</p>
                         </div>
                     </div>
                 `;
@@ -660,9 +867,12 @@
         function renderCharts() {
             let countCS14 = 0;
             let countCS23 = 0;
+            const uniqueAreas = new Set();
             const spoolCounts = {};
+            const currentTrans = translations[currentLang];
 
             localDataStore.forEach(item => {
+                uniqueAreas.add(item.area);
                 if (item.area === 'CS. 14') countCS14++;
                 if (item.area === 'CS. 23') countCS23++;
                 
@@ -670,6 +880,7 @@
                 spoolCounts[splID] = (spoolCounts[splID] || 0) + 1;
             });
 
+            document.getElementById('totalAreaCount').textContent = uniqueAreas.size;
             document.getElementById('totalCS14Count').textContent = countCS14;
             document.getElementById('totalCS23Count').textContent = countCS23;
 
@@ -681,17 +892,17 @@
             const chartContainer = document.getElementById('frequencyChart');
 
             if (sortedSpools.length === 0) {
-                chartContainer.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">No analysis available.</p>`;
+                chartContainer.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">${currentTrans.statsNoAnalysis}</p>`;
                 return;
             }
 
             chartContainer.innerHTML = sortedSpools.map(([spl, count]) => {
                 const percentage = Math.round((count / maxCount) * 100);
                 return `
-                    <div class="space-y-1">
+                    <div class="space-y-1 text-xs">
                         <div class="flex justify-between text-[11px] font-bold">
                             <span class="text-gray-700">Spool SPL:${spl}</span>
-                            <span class="text-blue-600">${count} Items</span>
+                            <span class="text-blue-600">${count} ${currentTrans.itemsSuffix}</span>
                         </div>
                         <div class="w-full bg-gray-100 rounded-full h-2">
                             <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full" style="width: ${percentage}%"></div>
@@ -701,54 +912,72 @@
             }).join('');
         }
 
+        // Import clear textbox trigger
+        function clearImportBox() {
+            triggerHapticFeedback();
+            bulkPasteInput.value = '';
+            analyzedTempItems = [];
+            resetImportStates();
+            showToast("btnClear");
+        }
+
+        function resetImportStates() {
+            const currentTrans = translations[currentLang];
+            document.getElementById('detectArea').textContent = "-";
+            document.getElementById('detectDate').textContent = "-";
+            document.getElementById('detectCount').textContent = "0";
+            document.getElementById('parsedItemsPreviewList').innerHTML = `
+                <p class="text-xs text-gray-400 text-center py-6">${currentTrans.importPreviewEmpty}</p>
+            `;
+            updateSaveButtonText();
+        }
+
+        // Analyze & display classic preview flow
         function analyzeAndDisplay() {
             triggerHapticFeedback();
-            const rawText = document.getElementById('bulkPasteInput').value;
+            const rawText = bulkPasteInput.value;
             const text = sanitizeUnicode(rawText);
+            const currentTrans = translations[currentLang];
 
             if (!text.trim()) {
-                showToast("পেস্ট করার জন্য কোনো ডাটা পাওয়া যায়নি!");
+                resetImportStates();
+                showToast("toastNoDataToImport");
                 return;
             }
 
             const lines = text.split('\n');
-            let detectedArea = "CS. 14"; 
+            let detectedArea = "CS. 14"; // Fallback default Area context
             let detectedDate = "2026-05-16"; 
             const parsedItems = [];
 
-            // Phase 1: Scan for Date and Area context across lines
+            // Stage 1: Auto Scan headers
             for (let line of lines) {
                 line = line.trim();
-                
-                // Match Date like "16-05_2026" or "16-05-2026"
                 const dateMatch = line.match(/(\d{2})[-_](\d{2})[-_](\d{4})/);
                 if (dateMatch) {
                     detectedDate = `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`;
                 }
-
-                // Match Area like "AREA : CS. 14" or "AREA : CS. 23"
                 const areaMatch = line.match(/(?:AREA|𝐀𝐑𝐄𝐀)\s*:\s*(CS\.\s*\d+)/i);
                 if (areaMatch) {
                     detectedArea = areaMatch[1].toUpperCase();
                 }
             }
 
-            // Phase 2: Parse individual records
+            // Bind values in UI Detection Results Card
+            document.getElementById('detectArea').textContent = detectedArea;
+            document.getElementById('detectDate').textContent = detectedDate;
+
+            // Stage 2: Spools mapper
             for (let line of lines) {
                 line = line.trim();
                 if (!line) continue;
 
-                // Skip header descriptors entirely
                 if (line.match(/(?:AREA|𝐀𝐑𝐄𝐀)\s*:/i) || line.match(/(\d{2})[-_](\d{2})[-_](\d{4})/) || line.match(/NEW\s*\.\s*SPOOL/i)) {
                     continue;
                 }
 
-                // Safe serial strip: removes leading serials e.g. "1. ", "12 ", "103. ", "103 "
-                // only if it is immediately followed by a number with 5+ digits (to protect EB code)
-                let cleanLine = line.replace(/^\d+(?:\s+|\.+)(?=\d{5,})/, '').trim();
+                let cleanLine = line.replace(/^\d+[\s.)\]）\-~]+\s*(?=\d{5,})/, '').trim();
 
-                // 1. MATCH FOR DASHES '----' OR DOTS '...' SEPARATOR (Explicit Spool Target)
-                // e.g., "128374 ... 2" or "128374 ---- 2" or "128374...2"
                 const matchDotsDashes = cleanLine.match(/^(\d{5,})\s*(?:\.{2,}|-{2,})\s*(\d+)/);
                 if (matchDotsDashes) {
                     parsedItems.push({
@@ -760,7 +989,6 @@
                     continue;
                 }
 
-                // 2. Standard Pattern: "EB: 128357 SPL:001"
                 const matchA = cleanLine.match(/(?:EB)\s*[:;]?\s*(\d+)\s*(?:SPL|SPl|SP[lI])\s*[:;]?\s*(\d+)/i);
                 if (matchA) {
                     parsedItems.push({
@@ -772,7 +1000,6 @@
                     continue;
                 }
 
-                // 3. Special dense format case: e.g. "55285513.1" (where 55 is index, 285513 is EB, 1 is Spool)
                 const matchSpecialCase = cleanLine.match(/^(\d{1,3})(\d{6})\.(\d+)/);
                 if (matchSpecialCase) {
                     parsedItems.push({
@@ -784,7 +1011,6 @@
                     continue;
                 }
 
-                // 4. Dot or Space separate pattern: "128374.2" or "290209 3" or "127607;1" or "127607-1"
                 const matchC = cleanLine.match(/^(\d{5,})\s*[\s.;-]\s*(\d+)/);
                 if (matchC) {
                     parsedItems.push({
@@ -798,41 +1024,54 @@
             }
 
             analyzedTempItems = parsedItems;
-
-            // Render auto detection badges
-            document.getElementById('detectArea').textContent = detectedArea;
-            document.getElementById('detectDate').textContent = detectedDate;
             document.getElementById('detectCount').textContent = parsedItems.length;
+            renderImportPreview();
+        }
 
-            const saveBtn = document.getElementById('saveBulkBtn');
+        function renderImportPreview() {
+            const currentTrans = translations[currentLang];
             const previewContainer = document.getElementById('parsedItemsPreviewList');
+            
+            updateSaveButtonText();
 
-            if (parsedItems.length > 0) {
-                saveBtn.removeAttribute('disabled');
-                
-                previewContainer.innerHTML = parsedItems.map((item, idx) => {
+            if (analyzedTempItems.length > 0) {
+                previewContainer.innerHTML = analyzedTempItems.map((item, idx) => {
                     const formatSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
                     return `
-                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 flex justify-between items-center text-xs shadow-sm">
+                        <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-100 flex justify-between items-center text-sm shadow-sm">
                             <div class="flex items-center gap-2.5">
-                                <span class="text-gray-400 font-extrabold text-[11px] min-w-[20px]">${idx + 1}.</span>
-                                <span class="font-bold text-gray-500">EB: <span class="text-gray-800 font-black">${item.eb}</span></span>
+                                <span class="text-gray-400 font-extrabold text-[12px] min-w-[20px]">${idx + 1}.</span>
+                                <span class="font-bold text-gray-500">EB: <span class="text-gray-800 font-black text-base">${item.eb}</span></span>
                             </div>
-                            <div class="flex items-center gap-1 bg-white border border-gray-100 px-2 py-1 rounded-lg">
-                                <span class="text-[9px] text-gray-400 font-bold uppercase">SPL:</span>
-                                <span class="text-blue-600 font-black text-xs">${formatSpl}</span>
+                            <div class="flex items-center gap-1.5 bg-white border border-gray-150 px-3 py-1.5 rounded-xl">
+                                <span class="text-[10px] text-gray-400 font-black uppercase">SPL:</span>
+                                <span class="text-blue-600 font-black text-sm">${formatSpl}</span>
                             </div>
                         </div>
                     `;
                 }).join('');
                 
-                showToast(`Parsed ${parsedItems.length} records successfully!`);
+                const parsedMsg = currentTrans.toastParsedSuccess.replace('{count}', analyzedTempItems.length);
+                showToast(parsedMsg);
+            } else {
+                previewContainer.innerHTML = `
+                    <p class="text-xs text-red-500 text-center py-6 font-bold">${currentTrans.importPreviewError}</p>
+                `;
+                showToast("toastNoDataToImport");
+            }
+        }
+
+        function updateSaveButtonText() {
+            const currentTrans = translations[currentLang];
+            const saveBtn = document.getElementById('saveBulkBtn');
+            const btnText = document.getElementById('saveBulkBtnText');
+
+            if (analyzedTempItems.length > 0) {
+                saveBtn.removeAttribute('disabled');
+                btnText.textContent = currentTrans.btnSaveSpoolsCount.replace('{count}', analyzedTempItems.length);
             } else {
                 saveBtn.setAttribute('disabled', 'true');
-                previewContainer.innerHTML = `
-                    <p class="text-xs text-red-500 text-center py-6 font-bold">মেসেজ থেকে কোনো ডাটা সনাক্ত করা যায়নি। অনুগ্রহ করে ডট (...) বা ড্যাশ (----) ফরম্যাটটি ব্যবহার করুন।</p>
-                `;
-                showToast("কোনো ডাটা পাওয়া যায়নি!");
+                btnText.textContent = currentTrans.btnSaveAll;
             }
         }
 
@@ -840,25 +1079,101 @@
             triggerHapticFeedback();
             if (analyzedTempItems.length === 0) return;
 
+            // Save first item's context for automatic home filter alignment (Prevents saved items getting filtered out)
+            const importedDate = analyzedTempItems[0].date;
+            const importedArea = analyzedTempItems[0].area;
+
+            // Merge entries and write strictly to local storage
             localDataStore = [...analyzedTempItems, ...localDataStore];
-            localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
+            try {
+                localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
+            } catch (e) {
+                console.error("Local storage save failed. Failback strictly in-memory.", e);
+            }
 
-            // Clear pasteboard screen
-            document.getElementById('bulkPasteInput').value = '';
-            document.getElementById('detectArea').textContent = '-';
-            document.getElementById('detectDate').textContent = '-';
-            document.getElementById('detectCount').textContent = '0';
-            document.getElementById('parsedItemsPreviewList').innerHTML = `
-                <p class="text-xs text-gray-400 text-center py-6">কোনো টেক্সট পেস্ট করার পর 'চেক করুন' বাটনে চাপ দিন।</p>
-            `;
-            document.getElementById('saveBulkBtn').setAttribute('disabled', 'true');
+            const savedCount = analyzedTempItems.length;
+            const currentTrans = translations[currentLang];
 
-            showToast(`${analyzedTempItems.length} records saved to database! ✅`);
+            // Reset input box
+            bulkPasteInput.value = '';
             analyzedTempItems = [];
+            resetImportStates();
+
+            // Auto-align filter settings on the Home Tab so newly imported spools are visible instantly
+            if (importedDate) {
+                dateInput.value = importedDate;
+            }
+            if (importedArea) {
+                selectedArea = importedArea;
+            } else {
+                selectedArea = 'ALL';
+            }
+
+            const saveMsg = currentTrans.toastSavedSuccess.replace('{count}', savedCount);
+            showToast(saveMsg);
             
             renderData();
             switchTab('home');
         }
+
+        // DYNAMIC TIME-OF-DAY GREETINGS ENGINE & WELCOME MODAL
+        function triggerWelcomePopup() {
+            const welcomeModal = document.getElementById('welcomeModal');
+            const welcomeTotalCount = document.getElementById('welcomeTotalCount');
+            const welcomeDate = document.getElementById('welcomeDate');
+            const welcomeTimeGreeting = document.getElementById('welcomeTimeGreeting');
+            const currentTrans = translations[currentLang];
+
+            // Database count injection
+            welcomeTotalCount.textContent = localDataStore.length + " " + (currentLang === 'en' ? 'SPOOLS' : 'Spool');
+
+            // Format dynamic date block
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date();
+            welcomeDate.textContent = today.toLocaleDateString(currentLang === 'en' ? 'en-US' : 'bn-BD', options);
+
+            // Dynamic Time of Day Greeting logic
+            const hour = today.getHours();
+            let timeGreetingText = "";
+
+            if (currentLang === 'en') {
+                if (hour >= 5 && hour < 12) {
+                    timeGreetingText = "☀️ Good Morning!";
+                } else if (hour >= 12 && hour < 16) {
+                    timeGreetingText = "☀️ Good Afternoon!";
+                } else if (hour >= 16 && hour < 18) {
+                    timeGreetingText = "⛅ Good Afternoon!";
+                } else if (hour >= 18 && hour < 23) {
+                    timeGreetingText = "🌙 Good Evening!";
+                } else {
+                    timeGreetingText = "🌙 Good Night!";
+                }
+            } else {
+                // Bangla Latin / Banglish greetings
+                if (hour >= 5 && hour < 12) {
+                    timeGreetingText = "☀️ Shuvo Sokal!";
+                } else if (hour >= 12 && hour < 16) {
+                    timeGreetingText = "☀️ Shuvo Dupur!";
+                } else if (hour >= 16 && hour < 18) {
+                    timeGreetingText = "⛅ Shuvo Bikal!";
+                } else if (hour >= 18 && hour < 23) {
+                    timeGreetingText = "🌙 Shuvo Shondha!";
+                } else {
+                    timeGreetingText = "🌙 Shuvo Ratri!";
+                }
+            }
+
+            welcomeTimeGreeting.textContent = timeGreetingText;
+
+            // Pop active overlay
+            welcomeModal.classList.remove('hidden');
+        }
+
+        // Close Welcome Popup Listener
+        document.getElementById('closeWelcomeBtn').addEventListener('click', () => {
+            triggerHapticFeedback();
+            document.getElementById('welcomeModal').classList.add('hidden');
+        });
 
         function switchTab(tabName) {
             triggerHapticFeedback();
@@ -870,15 +1185,22 @@
             tabs.forEach(tab => {
                 const btn = document.getElementById(`tab-btn-${tab}`);
                 if (tab === tabName) {
-                    btn.className = "flex flex-col items-center justify-center active-tab";
+                    btn.className = "flex flex-col items-center justify-center active-tab active-press";
                 } else {
-                    btn.className = "flex flex-col items-center justify-center text-gray-400";
+                    btn.className = "flex flex-col items-center justify-center text-gray-400 active-press";
                 }
             });
         }
 
-        // Event hooks
-        searchInput.addEventListener('input', renderData);
+        // Key bindings and listeners (AUTO-SANITIZATION ON SEARCH INPUT)
+        searchInput.addEventListener('input', (e) => {
+            const sanitized = sanitizeUnicode(e.target.value);
+            if (e.target.value !== sanitized) {
+                e.target.value = sanitized; // User types/pastes bold -> instantly becomes standard
+            }
+            renderData();
+        });
+
         dateInput.addEventListener('change', renderData);
         clearDate.addEventListener('click', () => {
             triggerHapticFeedback();
@@ -890,6 +1212,7 @@
 
         document.getElementById('shareData').addEventListener('click', () => {
             triggerHapticFeedback();
+            const currentTrans = translations[currentLang];
             const filtered = localDataStore.filter(item => {
                 const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
                 const matchesDate = (!dateInput.value || item.date === dateInput.value);
@@ -897,7 +1220,7 @@
             });
 
             if (filtered.length === 0) {
-                showToast("No data to export!");
+                showToast("toastNoDataToShare");
                 return;
             }
 
@@ -914,10 +1237,9 @@
             document.execCommand('copy');
             document.body.removeChild(el);
 
-            showToast("Copied to clipboard! 📋");
+            showToast("toastCopiedClipboard");
         });
 
-        // Add manual single item modal controller
         fabAdd.addEventListener('click', () => {
             triggerHapticFeedback();
             addModal.classList.remove('hidden');
@@ -935,18 +1257,24 @@
             const date = document.getElementById('modalDate').value;
 
             if (!eb || !spl || !date) {
-                showToast("Please fill all fields!");
+                showToast("toastAllFieldsRequired");
                 return;
             }
 
             const newRecord = { date, area, eb, spl };
             localDataStore.unshift(newRecord);
-            localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
+            
+            // Save newly added manual item to Local Storage
+            try {
+                localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
+            } catch (e) {
+                console.error("Local storage manual write error:", e);
+            }
             
             document.getElementById('modalEB').value = '';
             document.getElementById('modalSPL').value = '';
             addModal.classList.add('hidden');
-            showToast("Saved successfully! ✅");
+            showToast("toastRecordSaved");
             renderData();
         });
 
@@ -964,22 +1292,35 @@
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
-            showToast("Database copied in CSV!");
+            showToast("toastCsvCopied");
         }
 
+        // Dynamic confirmed modals for DB reset
         function clearFullDatabase() {
             triggerHapticFeedback();
-            const check = confirm("আপনি কি ডাটাবেজের সমস্ত ডাটা সম্পূর্ণভাবে মুছে ফেলতে চান?");
-            if (check) {
-                localDataStore = [];
-                localStorage.setItem('spool_pro_database', JSON.stringify([]));
-                showToast("Database Cleared Successfully!");
-                renderData();
-            }
+            document.getElementById('confirmResetModal').classList.remove('hidden');
         }
 
-        window.onload = function() {
+        document.getElementById('cancelResetBtn').addEventListener('click', () => {
+            document.getElementById('confirmResetModal').classList.add('hidden');
+        });
+
+        document.getElementById('confirmResetModal').addEventListener('click', () => {
+            localDataStore = [];
+            try {
+                localStorage.setItem('spool_pro_database', JSON.stringify([]));
+            } catch (e) {
+                console.error("Local storage database reset write error:", e);
+            }
+            document.getElementById('confirmResetModal').classList.add('hidden');
+            showToast("toastDbCleared");
             renderData();
+        });
+
+        // Initialize Lang & state configurations on window load
+        window.onload = function() {
+            setLanguage(currentLang);
+            triggerWelcomePopup(); // Run welcome pop-up on entering the app
         };
     </script>
 </body>
