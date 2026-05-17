@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Spool App Pro</title>
+    <title>Spool App Pro - Multiarea</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
@@ -29,7 +29,7 @@
             color: #2563eb;
             border-top: 2px solid #2563eb;
         }
-        input:focus {
+        input:focus, select:focus {
             outline: none;
         }
         @keyframes slideIn {
@@ -37,150 +37,711 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .item-card {
-            animation: slideIn 0.3s ease-out forwards;
+            animation: slideIn 0.2s ease-out forwards;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
     </style>
 </head>
 <body class="bg-gray-100">
 
-    <div class="app-container shadow-2xl">
-        <header class="bg-blue-700 text-white p-4 pt-6 pb-8 rounded-b-[2rem] shadow-lg">
-            <div class="flex justify-between items-center mb-4">
+    <div class="app-container shadow-2xl relative overflow-hidden">
+        <!-- Header Section -->
+        <header class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-4 pt-5 pb-6 rounded-b-[2rem] shadow-lg shrink-0">
+            <div class="flex justify-between items-center mb-3">
                 <div>
-                    <p class="text-blue-100 text-xs font-semibold uppercase tracking-widest">AREA: CS. 23</p>
-                    <h1 class="text-xl font-bold">Production Log</h1>
+                    <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest" id="areaSubtitle">AREA: ALL</p>
+                    <h1 class="text-xl font-black tracking-tight flex items-center gap-2">
+                        Production Log Pro
+                        <span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">V2.0</span>
+                    </h1>
                 </div>
-                <div class="bg-blue-600/50 px-3 py-1 rounded-full border border-blue-400/30">
-                    <span class="text-[10px] font-bold">NEW . SPOOL</span>
+                <div class="bg-white/10 px-3 py-1 rounded-full border border-white/20">
+                    <span class="text-[10px] font-bold" id="totalCountBadge">0 SPOOLS</span>
                 </div>
             </div>
             
-            <div class="space-y-3">
+            <!-- Controls (Search & Date Filters) -->
+            <div class="space-y-2.5">
                 <div class="relative">
                     <input type="text" id="searchInput" 
-                           placeholder="Search EB or Spool..." 
-                           class="w-full bg-white/10 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-white placeholder-white/60 focus:bg-white focus:text-gray-900 transition-all">
-                    <div class="absolute left-3 top-3.5">
-                        <svg class="h-5 w-5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                           placeholder="Search EB or Spool (SPL)..." 
+                           class="w-full bg-white/10 border border-white/20 rounded-xl py-2.5 pl-10 pr-4 text-white text-sm placeholder-white/60 focus:bg-white focus:text-gray-900 focus:shadow-inner transition-all">
+                    <div class="absolute left-3 top-3">
+                        <svg class="h-4 w-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                 </div>
                 
                 <div class="flex gap-2">
+                    <!-- Date Input -->
                     <div class="relative flex-grow">
-                        <input type="date" id="dateInput" 
-                               class="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-4 text-white text-sm focus:bg-white focus:text-gray-900 transition-all">
+                        <input type="date" id="dateInput" value="2026-05-16"
+                               class="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3 text-white text-xs focus:bg-white focus:text-gray-900 transition-all">
                     </div>
-                    <button id="clearDate" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl border border-white/20 transition-all">
-                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <!-- Clear Date Button -->
+                    <button id="clearDate" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl border border-white/20 transition-all flex items-center justify-center">
+                        <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
+                    <!-- Share Button -->
+                    <button id="shareData" class="bg-white/15 hover:bg-white/25 px-3 py-2 rounded-xl border border-white/20 transition-all flex items-center gap-1 text-xs font-bold text-white">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.136-2.068m0 5.652l-4.136-2.068a3 3 0 110-3.176m4.136 2.068a3 3 0 114.773 2.628l-4.136-2.068M3 12a3 3 0 106 0 3 3 0 00-6 0zm11-6a3 3 0 116 0 3 3 0 01-6 0zm5 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Share
+                    </button>
+                </div>
+
+                <!-- Area Pill Selector -->
+                <div class="flex gap-1.5 pt-1 overflow-x-auto custom-scroll">
+                    <button onclick="setAreaFilter('ALL')" id="pill-ALL" class="shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white text-blue-800 border border-white/40 transition-all">ALL AREAS</button>
+                    <button onclick="setAreaFilter('CS. 14')" id="pill-CS14" class="shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-all">CS. 14 (NEW)</button>
+                    <button onclick="setAreaFilter('CS. 23')" id="pill-CS23" class="shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-all">CS. 23</button>
                 </div>
             </div>
         </header>
 
-        <main class="flex-grow overflow-y-auto custom-scroll p-4 space-y-3" id="listView">
-            <!-- Cards will be injected here -->
-        </main>
+        <!-- Main Content (Scrollable Tabs) -->
+        <div class="flex-grow overflow-y-auto custom-scroll relative p-3">
+            
+            <!-- Tab 1: HOME (List View) -->
+            <div id="homeTab" class="tab-content active space-y-3 pb-20">
+                <!-- Mini Stats Counter Bar -->
+                <div class="grid grid-cols-2 gap-2 shrink-0">
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">Active Filter</p>
+                            <p class="text-sm font-extrabold text-blue-900" id="statActiveArea">All Areas</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xs" id="statIconArea">ALL</div>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">Total Items</p>
+                            <p class="text-sm font-extrabold text-indigo-900" id="statCount">0</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-xs">SUM</div>
+                    </div>
+                </div>
 
-        <nav class="bg-white border-t border-gray-200 grid grid-cols-3 h-16">
-            <button class="flex flex-col items-center justify-center active-tab">
-                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                <span class="text-[10px] mt-1 font-bold">HOME</span>
+                <!-- Main Card Container -->
+                <div class="space-y-2.5" id="listView">
+                    <!-- Dynamic cards inject here -->
+                </div>
+            </div>
+
+            <!-- Tab 2: STATS (Analytical Dashboard) -->
+            <div id="statsTab" class="tab-content space-y-4 pb-20">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">Overall Distribution</h3>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="bg-blue-50 p-2.5 rounded-xl">
+                            <p class="text-[10px] text-blue-400 font-extrabold uppercase">Total Area</p>
+                            <p class="text-lg font-black text-blue-800">2</p>
+                        </div>
+                        <div class="bg-indigo-50 p-2.5 rounded-xl">
+                            <p class="text-[10px] text-indigo-400 font-extrabold uppercase">CS. 14 Count</p>
+                            <p class="text-lg font-black text-indigo-800" id="totalCS14Count">130</p>
+                        </div>
+                        <div class="bg-emerald-50 p-2.5 rounded-xl">
+                            <p class="text-[10px] text-emerald-400 font-extrabold uppercase">CS. 23 Count</p>
+                            <p class="text-lg font-black text-emerald-800" id="totalCS23Count">32</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphical Representation of Spool Frequency -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3 flex justify-between">
+                        <span>Spool Frequency (Top Active Spools)</span>
+                    </h3>
+                    <div class="space-y-3" id="frequencyChart">
+                        <!-- Bars generated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: SETTINGS -->
+            <div id="settingsTab" class="tab-content space-y-4 pb-20">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                    <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide border-b pb-2">App Customization</h3>
+                    
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-bold text-gray-700">Auto-pad Spool ID</p>
+                            <p class="text-[10px] text-gray-400">Pad SPL digits with leading zeros (e.g. 1 -> 001)</p>
+                        </div>
+                        <input type="checkbox" id="settingPad" checked class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <div>
+                            <p class="text-xs font-bold text-gray-700">Haptic Feedback Simulation</p>
+                            <p class="text-[10px] text-gray-400">Light flash confirmation on buttons</p>
+                        </div>
+                        <input type="checkbox" id="settingHaptic" checked class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide mb-2">Export Log Data</h3>
+                    <p class="text-xs text-gray-500 mb-3">Copy complete production dataset as standardized CSV format to clipboard.</p>
+                    <button onclick="exportCSV()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        Copy Raw Data CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Float Action Button (Quick Add) -->
+        <button id="fabAdd" class="absolute bottom-20 right-4 w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-all z-40">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        </button>
+
+        <!-- Quick Add Modal Overlay -->
+        <div id="addModal" class="hidden absolute inset-0 bg-black/50 z-50 flex items-end justify-center">
+            <div class="bg-white w-full rounded-t-[2rem] p-5 pb-8 space-y-4 animate-slideIn">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-base font-extrabold text-gray-900">Add New Spool Entry</h3>
+                    <button id="closeModal" class="p-1 rounded-full bg-gray-100 text-gray-500">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Select Area</label>
+                        <select id="modalArea" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-gray-700">
+                            <option value="CS. 14">CS. 14</option>
+                            <option value="CS. 23">CS. 23</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">EB Number</label>
+                        <input type="number" id="modalEB" placeholder="e.g. 128374" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-semibold text-gray-800">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Spool Number (SPL)</label>
+                        <input type="number" id="modalSPL" placeholder="e.g. 2" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-semibold text-gray-800">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Date</label>
+                        <input type="date" id="modalDate" value="2026-05-16" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-xs font-semibold text-gray-800">
+                    </div>
+                </div>
+
+                <button id="saveModalBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-xl text-xs tracking-wider uppercase transition-all shadow-md">
+                    Save Record
+                </button>
+            </div>
+        </div>
+
+        <!-- Notification Toast -->
+        <div id="toast" class="opacity-0 pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 bg-gray-900/90 text-white text-xs px-4 py-2.5 rounded-full font-bold shadow-lg transition-all duration-300 z-50 flex items-center gap-1.5">
+            <span id="toastText">Action successful!</span>
+        </div>
+
+        <!-- Bottom Tab Navigation -->
+        <nav class="bg-white border-t border-gray-200 grid grid-cols-3 h-16 shrink-0 z-30">
+            <button onclick="switchTab('home')" id="tab-btn-home" class="flex flex-col items-center justify-center active-tab">
+                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                <span class="text-[9px] mt-1 font-bold">HOME</span>
             </button>
-            <button class="flex flex-col items-center justify-center text-gray-400">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                <span class="text-[10px] mt-1 font-bold">STATS</span>
+            <button onclick="switchTab('stats')" id="tab-btn-stats" class="flex flex-col items-center justify-center text-gray-400">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span class="text-[9px] mt-1 font-bold">STATS</span>
             </button>
-            <button class="flex flex-col items-center justify-center text-gray-400">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span class="text-[10px] mt-1 font-bold">SETTINGS</span>
+            <button onclick="switchTab('settings')" id="tab-btn-settings" class="flex flex-col items-center justify-center text-gray-400">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="text-[9px] mt-1 font-bold">CONFIG</span>
             </button>
         </nav>
     </div>
 
     <script>
-        const data = [
-            { date: "2026-05-16", eb: "128357", spl: "001" }, { date: "2026-05-16", eb: "128291", spl: "002" },
-            { date: "2026-05-16", eb: "128335", spl: "002" }, { date: "2026-05-16", eb: "285511", spl: "005" },
-            { date: "2026-05-16", eb: "128395", spl: "003" }, { date: "2026-05-16", eb: "120727", spl: "002" },
-            { date: "2026-05-16", eb: "285517", spl: "005" }, { date: "2026-05-16", eb: "128388", spl: "004" },
-            { date: "2026-05-16", eb: "108579", spl: "001" }, { date: "2026-05-16", eb: "128410", spl: "003" },
-            { date: "2026-05-16", eb: "285678", spl: "007" }, { date: "2026-05-16", eb: "128412", spl: "003" },
-            { date: "2026-05-16", eb: "290567", spl: "006" }, { date: "2026-05-16", eb: "128367", spl: "005" },
-            { date: "2026-05-16", eb: "128344", spl: "001" }, { date: "2026-05-16", eb: "285688", spl: "003" },
-            { date: "2026-05-16", eb: "128346", spl: "002" }, { date: "2026-05-16", eb: "125259", spl: "003" },
-            { date: "2026-05-16", eb: "128279", spl: "001" }, { date: "2026-05-16", eb: "290488", spl: "002" },
-            { date: "2026-05-16", eb: "128000", spl: "002" }, { date: "2026-05-16", eb: "285756", spl: "002" },
-            { date: "2026-05-16", eb: "128331", spl: "001" }, { date: "2026-05-16", eb: "128371", spl: "003" },
-            { date: "2026-05-16", eb: "285510", spl: "001" }, { date: "2026-05-16", eb: "285512", spl: "005" },
-            { date: "2026-05-16", eb: "285692", spl: "005" }, { date: "2026-05-16", eb: "285516", spl: "005" },
-            { date: "2026-05-16", eb: "127775", spl: "002" }, { date: "2026-05-16", eb: "127552", spl: "006" },
-            { date: "2026-05-16", eb: "287501", spl: "001" }, { date: "2026-05-16", eb: "125322", spl: "002" }
+        // Integrated Comprehensive Database for CS.14 and CS.23
+        const initialData = [
+            // --- AREA: CS. 23 (32 Original Records) ---
+            { date: "2026-05-16", area: "CS. 23", eb: "128357", spl: "001" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128291", spl: "002" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128335", spl: "002" },
+            { date: "2026-05-16", area: "CS. 23", eb: "285511", spl: "005" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128395", spl: "003" },
+            { date: "2026-05-16", area: "CS. 23", eb: "120727", spl: "002" },
+            { date: "2026-05-16", area: "CS. 23", eb: "285517", spl: "005" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128388", spl: "004" },
+            { date: "2026-05-16", area: "CS. 23", eb: "108579", spl: "001" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128410", spl: "003" },
+            { date: "2026-05-16", area: "CS. 23", eb: "285678", spl: "007" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128412", spl: "003" },
+            { date: "2026-05-16", area: "CS. 23", eb: "290567", spl: "006" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128367", spl: "005" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128344", spl: "001" },
+            { date: "2026-05-16", area: "CS. 23", eb: "285688", spl: "003" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128346", spl: "002" },
+            { date: "2026-05-16", area: "CS. 23", eb: "125259", spl: "003" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128279", spl: "001" },
+            { date: "2026-05-16", area: "CS. 23", eb: "290488", spl: "002" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128000", spl: "002" },
+            { date: "2026-05-16", area: "CS. 23", eb: "285756", spl: "002" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128331", spl: "001" },
+            { date: "2026-05-16", area: "CS. 23", eb: "128371", spl: "003" },
+            { date: "2026-05-16", area: "CS. 23", eb: "285510", spl: "001" },
+            { date: "2026-05-16", area: "CS. 23", eb: "285512", spl: "005" },
+            { date: "2026-05-16", area: "CS. 23", eb: "285692", spl: "005" },
+            { date: "2026-05-16", area: "CS. 23", eb: "285516", spl: "005" },
+            { date: "2026-05-16", area: "CS. 23", eb: "127775", spl: "002" },
+            { date: "2026-05-16", area: "CS. 23", eb: "127552", spl: "006" },
+            { date: "2026-05-16", area: "CS. 23", eb: "287501", spl: "001" },
+            { date: "2026-05-16", area: "CS. 23", eb: "125322", spl: "002" },
+
+            // --- AREA: CS. 14 (130 New Handparsed Records) ---
+            { date: "2026-05-16", area: "CS. 14", eb: "128374", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "110365", spl: "008" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128337", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128007", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285686", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128452", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "200503", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128002", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288730", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288726", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "011" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290209", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288730", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290503", spl: "006" },
+            { date: "2026-05-16", area: "CS. 14", eb: "287687", spl: "007" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127999", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128455", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128457", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109279", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290318", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128142", spl: "007" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128432", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109358", spl: "006" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290503", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128393", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128266", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285753", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285653", spl: "006" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128334", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109497", spl: "004" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127582", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285903", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109762", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285692", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "185115", spl: "017" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128025", spl: "102" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285529", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290348", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "121519", spl: "004" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127622", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288189", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127758", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128311", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "287155", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285683", spl: "007" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290573", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109975", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285714", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127747", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285682", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285517", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128423", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285513", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285513", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285753", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288129", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127194", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288184", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290347", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "1244812", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "124396", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128423", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285678", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109358", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285748", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290347", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127763", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128337", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285749", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290352", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288461", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127410", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285889", spl: "004" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285711", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128368", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128334", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285651", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127607", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128176", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128336", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286741", spl: "004" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290348", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285893", spl: "008" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285733", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127577", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "014" },
+            { date: "2026-05-16", area: "CS. 14", eb: "124915", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109500", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290623", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "110640", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127202", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109197", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290624", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285733", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127577", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "014" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285924", spl: "007" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286583", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286409", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "110365", spl: "007" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127202", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286832", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "125128", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109197", spl: "004" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127768", spl: "008" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109492", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285683", spl: "005" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128523", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285513", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290492", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288733", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "2854514", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288733", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "124813", spl: "006" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128279", spl: "004" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128402", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127811", spl: "004" },
+            { date: "2026-05-16", area: "CS. 14", eb: "128386", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "290232", spl: "007" },
+            { date: "2026-05-16", area: "CS. 14", eb: "127228", spl: "007" },
+            { date: "2026-05-16", area: "CS. 14", eb: "111003", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109247", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285924", spl: "003" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109140", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "286619", spl: "010" },
+            { date: "2026-05-16", area: "CS. 14", eb: "109447", spl: "001" },
+            { date: "2026-05-16", area: "CS. 14", eb: "288132", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "190358", spl: "004" }
         ];
 
-        const listView = document.getElementById('listView');
+        // System memory to allow dynamic additions (acts as a local state)
+        let localDataStore = JSON.parse(localStorage.getItem('spool_pro_database')) || initialData;
+        let selectedArea = 'ALL';
+
+        // Elements configuration
         const searchInput = document.getElementById('searchInput');
         const dateInput = document.getElementById('dateInput');
         const clearDate = document.getElementById('clearDate');
+        const listView = document.getElementById('listView');
+        
+        // Modal & Add Elements
+        const fabAdd = document.getElementById('fabAdd');
+        const addModal = document.getElementById('addModal');
+        const closeModal = document.getElementById('closeModal');
+        const saveModalBtn = document.getElementById('saveModalBtn');
+        const toast = document.getElementById('toast');
+        const toastText = document.getElementById('toastText');
 
-        function renderList() {
-            const searchText = searchInput.value.toLowerCase();
-            const selectedDate = dateInput.value;
+        // Setting items
+        const settingPad = document.getElementById('settingPad');
+        const settingHaptic = document.getElementById('settingHaptic');
 
-            const filteredData = data.filter(item => {
-                const matchesSearch = item.eb.toLowerCase().includes(searchText) || 
-                                     item.spl.toLowerCase().includes(searchText);
-                const matchesDate = selectedDate === "" || item.date === selectedDate;
-                return matchesSearch && matchesDate;
+        function triggerHapticFeedback() {
+            if (settingHaptic.checked) {
+                // Short visual confirmation
+                document.body.classList.add('brightness-95');
+                setTimeout(() => document.body.classList.remove('brightness-95'), 80);
+            }
+        }
+
+        function showToast(text) {
+            toastText.textContent = text;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2000);
+        }
+
+        // Area filtering controller
+        function setAreaFilter(area) {
+            selectedArea = area;
+            triggerHapticFeedback();
+            
+            // Adjust Pill states visually
+            const pills = {
+                'ALL': 'pill-ALL',
+                'CS. 14': 'pill-CS14',
+                'CS. 23': 'pill-CS23'
+            };
+
+            Object.keys(pills).forEach(key => {
+                const el = document.getElementById(pills[key]);
+                if (key === area) {
+                    el.className = "shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white text-blue-800 border border-white/40 transition-all shadow-md";
+                } else {
+                    el.className = "shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-all";
+                }
             });
 
-            if(filteredData.length === 0) {
+            // Update subtitles dynamically
+            document.getElementById('areaSubtitle').textContent = `AREA: ${area}`;
+            document.getElementById('statActiveArea').textContent = area === 'ALL' ? 'All Areas' : area;
+            document.getElementById('statIconArea').textContent = area === 'ALL' ? 'ALL' : area.replace(/\s+/g, '');
+
+            renderData();
+        }
+
+        function renderData() {
+            const searchText = searchInput.value.toLowerCase().trim();
+            const selectedDate = dateInput.value;
+
+            // Apply multi-layered filtering
+            const filtered = localDataStore.filter(item => {
+                const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
+                const matchesDate = (!selectedDate || item.date === selectedDate);
+                
+                // EB matches anywhere or spool matches anywhere
+                const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                const matchesSearch = !searchText || 
+                    item.eb.toLowerCase().includes(searchText) || 
+                    formattedSpl.toLowerCase().includes(searchText);
+
+                return matchesArea && matchesDate && matchesSearch;
+            });
+
+            // Update numerical stats counters
+            document.getElementById('statCount').textContent = filtered.length;
+            document.getElementById('totalCountBadge').textContent = `${filtered.length} ITEMS`;
+
+            if (filtered.length === 0) {
                 listView.innerHTML = `
-                    <div class="text-center py-20">
-                        <div class="bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <div class="text-center py-16 bg-white rounded-2xl border border-gray-100 p-6">
+                        <div class="bg-gray-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         </div>
-                        <p class="text-gray-500 font-medium">No records found</p>
+                        <p class="text-gray-600 text-sm font-bold">No Records Found</p>
+                        <p class="text-[11px] text-gray-400 mt-1">Try changing your filters or add a new entry below.</p>
                     </div>
                 `;
                 return;
             }
 
-            listView.innerHTML = filteredData.map(item => `
-                <div class="item-card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center active:scale-[0.98] transition-transform">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                            <span class="text-blue-600 font-bold text-lg">${item.spl.slice(-2)}</span>
+            // Populate cards inside list
+            listView.innerHTML = filtered.map((item, idx) => {
+                const isCS14 = item.area === 'CS. 14';
+                const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                return `
+                    <div class="item-card bg-white p-3.5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center active:scale-[0.98] transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 ${isCS14 ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-blue-50 text-blue-700 border-blue-100'} border rounded-xl flex items-center justify-center font-black text-sm">
+                                ${formattedSpl.slice(-3)}
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-[9px] ${isCS14 ? 'bg-indigo-600' : 'bg-blue-600'} text-white px-1.5 py-0.5 rounded font-bold">${item.area}</span>
+                                    <span class="text-[9px] text-gray-400 font-semibold uppercase">EB: ${idx + 1}</span>
+                                </div>
+                                <p class="text-gray-800 font-extrabold text-base leading-tight mt-1">${item.eb}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-tighter">EB NUMBER</p>
-                            <p class="text-gray-800 font-bold text-lg leading-tight">${item.eb}</p>
+                        <div class="text-right">
+                            <span class="bg-gray-800 text-white text-[9px] px-2 py-1 rounded-lg font-black tracking-widest">
+                                SPL:${formattedSpl}
+                            </span>
+                            <p class="text-[9px] text-gray-400 mt-1.5 font-semibold">${item.date}</p>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Spool ID</p>
-                        <span class="bg-gray-800 text-white text-[10px] px-2.5 py-1 rounded-lg font-black tracking-widest">
-                            SPL:${item.spl}
-                        </span>
-                        <p class="text-[10px] text-blue-500 mt-2 font-medium">${item.date}</p>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+
+            // Also render analytical elements if Stats tab is loaded
+            renderCharts();
         }
 
-        searchInput.addEventListener('input', renderList);
-        dateInput.addEventListener('change', renderList);
-        
+        function renderCharts() {
+            // Count occurrence of spools
+            const spoolCounts = {};
+            let countCS14 = 0;
+            let countCS23 = 0;
+
+            localDataStore.forEach(item => {
+                if (item.area === 'CS. 14') countCS14++;
+                if (item.area === 'CS. 23') countCS23++;
+                
+                const splID = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                spoolCounts[splID] = (spoolCounts[splID] || 0) + 1;
+            });
+
+            document.getElementById('totalCS14Count').textContent = countCS14;
+            document.getElementById('totalCS23Count').textContent = countCS23;
+
+            // Sort top spools by frequency
+            const sortedSpools = Object.entries(spoolCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5); // top 5 most frequent
+
+            const maxCount = sortedSpools[0] ? sortedSpools[0][1] : 1;
+            const chartContainer = document.getElementById('frequencyChart');
+
+            if (sortedSpools.length === 0) {
+                chartContainer.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">No analysis available.</p>`;
+                return;
+            }
+
+            chartContainer.innerHTML = sortedSpools.map(([spl, count]) => {
+                const percentage = Math.round((count / maxCount) * 100);
+                return `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[11px] font-bold">
+                            <span class="text-gray-700">Spool SPL:${spl}</span>
+                            <span class="text-blue-600">${count} Items</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Tab Switching Mechanism
+        function switchTab(tabName) {
+            triggerHapticFeedback();
+            
+            // Toggle actual content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+
+            // Switch active visual representation in navigation
+            const tabs = ['home', 'stats', 'settings'];
+            tabs.forEach(tab => {
+                const btn = document.getElementById(`tab-btn-${tab}`);
+                if (tab === tabName) {
+                    btn.className = "flex flex-col items-center justify-center active-tab";
+                } else {
+                    btn.className = "flex flex-col items-center justify-center text-gray-400";
+                }
+            });
+        }
+
+        // Search & Filter event attachments
+        searchInput.addEventListener('input', renderData);
+        dateInput.addEventListener('change', renderData);
         clearDate.addEventListener('click', () => {
+            triggerHapticFeedback();
             dateInput.value = "";
-            renderList();
-            // Provide a small haptic feel by changing color briefly
-            clearDate.classList.add('bg-red-500');
-            setTimeout(() => clearDate.classList.remove('bg-red-500'), 200);
+            renderData();
         });
 
-        // Initial render
-        window.onload = () => renderList();
+        // Toggle elements for settings
+        settingPad.addEventListener('change', renderData);
 
+        // Share/Export feature (Compiles text format for easy sharing)
+        document.getElementById('shareData').addEventListener('click', () => {
+            triggerHapticFeedback();
+            const filtered = localDataStore.filter(item => {
+                const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
+                const matchesDate = (!dateInput.value || item.date === dateInput.value);
+                return matchesArea && matchesDate;
+            });
+
+            if (filtered.length === 0) {
+                showToast("No data to export!");
+                return;
+            }
+
+            let textContent = `*PRODUCTION LOG REPORT*\nDate: ${dateInput.value || 'All Dates'}\nArea: ${selectedArea}\nTotal: ${filtered.length} entries\n\n`;
+            filtered.forEach((item, index) => {
+                const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                textContent += `${index + 1}. EB: ${item.eb} | SPL: ${formattedSpl} (${item.area})\n`;
+            });
+
+            // Modern Copy mechanism safely using hidden elements (works universally in Webview/IFrames)
+            const el = document.createElement('textarea');
+            el.value = textContent;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast("Copied to clipboard! 📋");
+        });
+
+        // Quick Add Floating Actions
+        fabAdd.addEventListener('click', () => {
+            triggerHapticFeedback();
+            addModal.classList.remove('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            addModal.classList.add('hidden');
+        });
+
+        saveModalBtn.addEventListener('click', () => {
+            triggerHapticFeedback();
+            const area = document.getElementById('modalArea').value;
+            const eb = document.getElementById('modalEB').value.trim();
+            const spl = document.getElementById('modalSPL').value.trim();
+            const date = document.getElementById('modalDate').value;
+
+            if (!eb || !spl || !date) {
+                showToast("Please fill all fields!");
+                return;
+            }
+
+            // Create record
+            const newRecord = {
+                date: date,
+                area: area,
+                eb: eb,
+                spl: spl
+            };
+
+            localDataStore.unshift(newRecord); // Add to beginning
+            localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
+            
+            // Clean up modal inputs
+            document.getElementById('modalEB').value = '';
+            document.getElementById('modalSPL').value = '';
+            
+            addModal.classList.add('hidden');
+            showToast("Saved successfully! ✅");
+            renderData();
+        });
+
+        // Export system configurations to raw CSV
+        function exportCSV() {
+            triggerHapticFeedback();
+            let csv = "Date,Area,EB Number,Spool ID\n";
+            localDataStore.forEach(item => {
+                const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                csv += `${item.date},"${item.area}","${item.eb}","${formattedSpl}"\n`;
+            });
+
+            const el = document.createElement('textarea');
+            el.value = csv;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            showToast("Database copied in CSV!");
+        }
+
+        // Initialize App on window load
+        window.onload = function() {
+            renderData();
+        };
     </script>
 </body>
 </html>
