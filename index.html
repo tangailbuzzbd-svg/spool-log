@@ -18,7 +18,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #0f172a; /* Slate 900 for modern back-drop */
+            background-color: #0f172a; /* Slate 900 backdrop */
             font-family: 'Inter', sans-serif; 
             -webkit-tap-highlight-color: transparent;
             user-select: none;
@@ -89,7 +89,7 @@
                     <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest" id="areaSubtitle">AREA: ALL</p>
                     <h1 class="text-xl font-black tracking-tight flex items-center gap-2">
                         Production Log Pro
-                        <span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">V2.2</span>
+                        <span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">V2.3</span>
                     </h1>
                 </div>
                 <div class="bg-white/10 px-3 py-1 rounded-full border border-white/20">
@@ -130,7 +130,7 @@
             </div>
         </header>
 
-        <!-- Main Content Area (Scrolls separately) -->
+        <!-- Main Content Area -->
         <div class="flex-grow relative overflow-hidden p-3 pb-0">
             
             <!-- Tab 1: HOME (List View) -->
@@ -166,12 +166,12 @@
                         </div>
                         <div>
                             <h3 class="text-sm font-black text-gray-800">একসাথে পেস্ট করুন (Bulk Import)</h3>
-                            <p class="text-[10px] text-gray-400">মেসেজটি সরাসরি কপি করে নিচে পেস্ট করে দিন</p>
+                            <p class="text-[10px] text-gray-400">পুরো মেসেজটি কপি করে নিচে সরাসরি পেস্ট করে দিন</p>
                         </div>
                     </div>
 
                     <textarea id="bulkPasteInput" rows="6" 
-                              placeholder="১টি মেসেজ সরাসরি পেস্ট করুন...&#10;যেমন:&#10;16-05_2026&#10;AREA : CS. 14&#10;1.128374.2&#10;2.110365.8" 
+                              placeholder="১টি মেসেজ সরাসরি পেস্ট করুন...&#10;যেমন:&#10;16-05_2026&#10;AREA : CS. 14&#10;1. 128374 ... 2&#10;2. 110365 ---- 8" 
                               class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs text-gray-700 font-mono focus:bg-white focus:border-blue-500 transition-all"></textarea>
                     
                     <div class="bg-slate-50 p-3 rounded-xl border border-gray-100 text-xs space-y-1.5" id="parsedDetectionResult">
@@ -204,7 +204,7 @@
 
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-2 mt-3">
                     <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wide">নিচের ডাটাগুলো ইমপোর্ট হবে (Preview List)</h4>
-                    <div class="max-h-60 overflow-y-auto custom-scroll space-y-1.5" id="parsedItemsPreviewList">
+                    <div class="max-h-60 overflow-y-auto custom-scroll space-y-2" id="parsedItemsPreviewList">
                         <p class="text-xs text-gray-400 text-center py-6">কোনো টেক্সট পেস্ট করার পর 'চেক করুন' বাটনে চাপ দিন।</p>
                     </div>
                 </div>
@@ -538,6 +538,20 @@
         const settingPad = document.getElementById('settingPad');
         const settingHaptic = document.getElementById('settingHaptic');
 
+        function sanitizeUnicode(text) {
+            // Converts mathematical bold text or copy-paste rich symbols to normal text
+            const unicodeMap = {
+                '𝟎': '0', '𝟏': '1', '𝟐': '2', '𝟑': '3', '𝟒': '4', '𝟓': '5', '𝟔': '6', '𝟕': '7', '𝟖': '8', '𝟗': '9',
+                '𝐀': 'A', '𝐁': 'B', '𝐂': 'C', '𝐃': 'D', '𝐄': 'E', '𝐅': 'F', '𝐆': 'G', '𝐇': 'H', '𝐈': 'I', '𝐉': 'J',
+                '𝐊': 'K', '𝐋': 'L', '𝐌': 'M', '𝐍': 'N', '𝐎': 'O', '𝐏': 'P', '𝐐': 'Q', '𝐑': 'R', '𝐒': 'S', '𝐓': 'T',
+                '𝐔': 'U', '𝐕': 'V', '𝐖': 'W', '𝐗': 'X', '𝐘': 'Y', '𝐙': 'Z',
+                '𝐚': 'a', '𝐛': 'b', '𝐜': 'c', '𝐝': 'd', '𝐞': 'e', '𝐟': 'f', '𝐠': 'g', '𝐡': 'h', '𝐢': 'i', '𝐣': 'j',
+                '𝐤': 'k', '𝐥': 'l', '𝐦': 'm', '𝐧': 'n', '𝐨': 'o', '𝐩': 'p', '𝐪': 'q', '𝐫': 'r', '𝐬': 's', '𝐭': 't',
+                '𝐮': 'u', '𝐯': 'v', '𝐰': 'w', '𝐱': 'x', '𝐲': 'y', '𝐳': 'z'
+            };
+            return text.split('').map(char => unicodeMap[char] || char).join('');
+        }
+
         function triggerHapticFeedback() {
             if (settingHaptic.checked) {
                 document.body.classList.add('brightness-95');
@@ -689,7 +703,9 @@
 
         function analyzeAndDisplay() {
             triggerHapticFeedback();
-            const text = document.getElementById('bulkPasteInput').value;
+            const rawText = document.getElementById('bulkPasteInput').value;
+            const text = sanitizeUnicode(rawText);
+
             if (!text.trim()) {
                 showToast("পেস্ট করার জন্য কোনো ডাটা পাওয়া যায়নি!");
                 return;
@@ -700,7 +716,7 @@
             let detectedDate = "2026-05-16"; 
             const parsedItems = [];
 
-            // 1. Scan for Date and Area context first
+            // Phase 1: Scan for Date and Area context across lines
             for (let line of lines) {
                 line = line.trim();
                 
@@ -717,13 +733,35 @@
                 }
             }
 
-            // 2. Parse Spool details (EB and SPL lines)
+            // Phase 2: Parse individual records
             for (let line of lines) {
                 line = line.trim();
                 if (!line) continue;
 
-                // Pattern A: Match "EB: 128357 SPL:001"
-                const matchA = line.match(/(?:EB|𝐄𝐁)\s*[:;]?\s*(\d+)\s*(?:SPL|𝐒𝐏𝐋|𝐒𝐏l|SP[lI])\s*[:;]?\s*(\d+)/i);
+                // Skip header descriptors entirely
+                if (line.match(/(?:AREA|𝐀𝐑𝐄𝐀)\s*:/i) || line.match(/(\d{2})[-_](\d{2})[-_](\d{4})/) || line.match(/NEW\s*\.\s*SPOOL/i)) {
+                    continue;
+                }
+
+                // Safe serial strip: removes leading serials e.g. "1. ", "12 ", "103. ", "103 "
+                // only if it is immediately followed by a number with 5+ digits (to protect EB code)
+                let cleanLine = line.replace(/^\d+(?:\s+|\.+)(?=\d{5,})/, '').trim();
+
+                // 1. MATCH FOR DASHES '----' OR DOTS '...' SEPARATOR (Explicit Spool Target)
+                // e.g., "128374 ... 2" or "128374 ---- 2" or "128374...2"
+                const matchDotsDashes = cleanLine.match(/^(\d{5,})\s*(?:\.{2,}|-{2,})\s*(\d+)/);
+                if (matchDotsDashes) {
+                    parsedItems.push({
+                        date: detectedDate,
+                        area: detectedArea,
+                        eb: matchDotsDashes[1],
+                        spl: matchDotsDashes[2]
+                    });
+                    continue;
+                }
+
+                // 2. Standard Pattern: "EB: 128357 SPL:001"
+                const matchA = cleanLine.match(/(?:EB)\s*[:;]?\s*(\d+)\s*(?:SPL|SPl|SP[lI])\s*[:;]?\s*(\d+)/i);
                 if (matchA) {
                     parsedItems.push({
                         date: detectedDate,
@@ -734,8 +772,8 @@
                     continue;
                 }
 
-                // Pattern B: Special edge cases like "55285513.1" -> index 55, EB 285513, SPL 1
-                const matchSpecialCase = line.match(/^(\d{1,3})(\d{6})\.(\d+)/);
+                // 3. Special dense format case: e.g. "55285513.1" (where 55 is index, 285513 is EB, 1 is Spool)
+                const matchSpecialCase = cleanLine.match(/^(\d{1,3})(\d{6})\.(\d+)/);
                 if (matchSpecialCase) {
                     parsedItems.push({
                         date: detectedDate,
@@ -746,14 +784,14 @@
                     continue;
                 }
 
-                // Pattern C: Match "1.128374.2" or "12 290209.3" or "81.127607 1" or "81.127607;1"
-                const matchC = line.match(/^(\d+)[\s.]+(\d+)[.\s;]+(\d+)/);
+                // 4. Dot or Space separate pattern: "128374.2" or "290209 3" or "127607;1" or "127607-1"
+                const matchC = cleanLine.match(/^(\d{5,})\s*[\s.;-]\s*(\d+)/);
                 if (matchC) {
                     parsedItems.push({
                         date: detectedDate,
                         area: detectedArea,
-                        eb: matchC[2],
-                        spl: matchC[3]
+                        eb: matchC[1],
+                        spl: matchC[2]
                     });
                     continue;
                 }
@@ -775,12 +813,15 @@
                 previewContainer.innerHTML = parsedItems.map((item, idx) => {
                     const formatSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
                     return `
-                        <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center text-xs">
-                            <div class="flex items-center gap-2">
-                                <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-1.5 py-0.5 rounded">#${idx + 1}</span>
-                                <span class="font-extrabold text-gray-800">EB: ${item.eb}</span>
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 flex justify-between items-center text-xs shadow-sm">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-gray-400 font-extrabold text-[11px] min-w-[20px]">${idx + 1}.</span>
+                                <span class="font-bold text-gray-500">EB: <span class="text-gray-800 font-black">${item.eb}</span></span>
                             </div>
-                            <span class="bg-gray-800 text-white font-black text-[9px] px-2 py-0.5 rounded">SPL: ${formatSpl}</span>
+                            <div class="flex items-center gap-1 bg-white border border-gray-100 px-2 py-1 rounded-lg">
+                                <span class="text-[9px] text-gray-400 font-bold uppercase">SPL:</span>
+                                <span class="text-blue-600 font-black text-xs">${formatSpl}</span>
+                            </div>
                         </div>
                     `;
                 }).join('');
@@ -789,7 +830,7 @@
             } else {
                 saveBtn.setAttribute('disabled', 'true');
                 previewContainer.innerHTML = `
-                    <p class="text-xs text-red-500 text-center py-6 font-bold">মেসেজ থেকে কোনো ডাটা সনাক্ত করা যায়নি। অনুগ্রহ করে ফরম্যাটটি যাচাই করুন।</p>
+                    <p class="text-xs text-red-500 text-center py-6 font-bold">মেসেজ থেকে কোনো ডাটা সনাক্ত করা যায়নি। অনুগ্রহ করে ডট (...) বা ড্যাশ (----) ফরম্যাটটি ব্যবহার করুন।</p>
                 `;
                 showToast("কোনো ডাটা পাওয়া যায়নি!");
             }
