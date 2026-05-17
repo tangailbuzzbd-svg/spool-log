@@ -29,7 +29,7 @@
             color: #2563eb;
             border-top: 2px solid #2563eb;
         }
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
         }
         @keyframes slideIn {
@@ -43,21 +43,24 @@
             display: none;
         }
         .tab-content.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow-y: auto;
         }
     </style>
 </head>
 <body class="bg-gray-100">
 
     <div class="app-container shadow-2xl relative overflow-hidden">
-        <!-- Header Section -->
-        <header class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-4 pt-5 pb-6 rounded-b-[2rem] shadow-lg shrink-0">
+        
+        <header class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-4 pt-5 pb-5 rounded-b-[2rem] shadow-lg shrink-0">
             <div class="flex justify-between items-center mb-3">
                 <div>
                     <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest" id="areaSubtitle">AREA: ALL</p>
                     <h1 class="text-xl font-black tracking-tight flex items-center gap-2">
                         Production Log Pro
-                        <span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">V2.0</span>
+                        <span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">V2.1</span>
                     </h1>
                 </div>
                 <div class="bg-white/10 px-3 py-1 rounded-full border border-white/20">
@@ -77,23 +80,19 @@
                 </div>
                 
                 <div class="flex gap-2">
-                    <!-- Date Input -->
                     <div class="relative flex-grow">
                         <input type="date" id="dateInput" value="2026-05-16"
                                class="w-full bg-white/10 border border-white/20 rounded-xl py-2 px-3 text-white text-xs focus:bg-white focus:text-gray-900 transition-all">
                     </div>
-                    <!-- Clear Date Button -->
                     <button id="clearDate" class="bg-white/10 hover:bg-white/20 p-2 rounded-xl border border-white/20 transition-all flex items-center justify-center">
                         <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
-                    <!-- Share Button -->
                     <button id="shareData" class="bg-white/15 hover:bg-white/25 px-3 py-2 rounded-xl border border-white/20 transition-all flex items-center gap-1 text-xs font-bold text-white">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.136-2.068m0 5.652l-4.136-2.068a3 3 0 110-3.176m4.136 2.068a3 3 0 114.773 2.628l-4.136-2.068M3 12a3 3 0 106 0 3 3 0 00-6 0zm11-6a3 3 0 116 0 3 3 0 01-6 0zm5 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         Share
                     </button>
                 </div>
 
-                <!-- Area Pill Selector -->
                 <div class="flex gap-1.5 pt-1 overflow-x-auto custom-scroll">
                     <button onclick="setAreaFilter('ALL')" id="pill-ALL" class="shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white text-blue-800 border border-white/40 transition-all">ALL AREAS</button>
                     <button onclick="setAreaFilter('CS. 14')" id="pill-CS14" class="shrink-0 text-[10px] font-bold px-3 py-1 rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-all">CS. 14 (NEW)</button>
@@ -102,12 +101,10 @@
             </div>
         </header>
 
-        <!-- Main Content (Scrollable Tabs) -->
         <div class="flex-grow overflow-y-auto custom-scroll relative p-3">
             
             <!-- Tab 1: HOME (List View) -->
             <div id="homeTab" class="tab-content active space-y-3 pb-20">
-                <!-- Mini Stats Counter Bar -->
                 <div class="grid grid-cols-2 gap-2 shrink-0">
                     <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
                         <div>
@@ -125,13 +122,69 @@
                     </div>
                 </div>
 
-                <!-- Main Card Container -->
                 <div class="space-y-2.5" id="listView">
-                    <!-- Dynamic cards inject here -->
+                    <!-- Dynamic cards injected here -->
                 </div>
             </div>
 
-            <!-- Tab 2: STATS (Analytical Dashboard) -->
+            <!-- Tab 2: BULK IMPORT (Paste Message directly) -->
+            <div id="importTab" class="tab-content space-y-4 pb-20">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-gray-800">একসাথে পেস্ট করুন (Bulk Import)</h3>
+                            <p class="text-[10px] text-gray-400">মেসেজটি সরাসরি কপি করে এখানে পেস্ট করে দিন</p>
+                        </div>
+                    </div>
+
+                    <!-- Input Box -->
+                    <textarea id="bulkPasteInput" rows="8" 
+                              placeholder="১টি মেসেজ সরাসরি পেস্ট করুন...&#10;যেমন:&#10;16-05_2026&#10;AREA : CS. 14&#10;1.128374.2&#10;2.110365.8" 
+                              class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs text-gray-700 font-mono focus:bg-white focus:border-blue-500 transition-all"></textarea>
+                    
+                    <!-- Real-time parsing detection details -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-gray-100 text-xs space-y-1.5" id="parsedDetectionResult">
+                        <p class="text-gray-500 font-semibold">ডিটেকশন রেজাল্ট (Auto Detected):</p>
+                        <div class="grid grid-cols-3 gap-2 pt-1 text-[11px] font-bold">
+                            <div class="bg-white p-1.5 rounded border border-gray-100 text-center">
+                                <span class="block text-[8px] text-gray-400 uppercase">Area</span>
+                                <span id="detectArea" class="text-indigo-600">-</span>
+                            </div>
+                            <div class="bg-white p-1.5 rounded border border-gray-100 text-center">
+                                <span class="block text-[8px] text-gray-400 uppercase">Date</span>
+                                <span id="detectDate" class="text-indigo-600">-</span>
+                            </div>
+                            <div class="bg-white p-1.5 rounded border border-gray-100 text-center">
+                                <span class="block text-[8px] text-gray-400 uppercase">Spools</span>
+                                <span id="detectCount" class="text-emerald-600">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-2">
+                        <button onclick="analyzeAndDisplay()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all">
+                            চেক করুন (Analyze)
+                        </button>
+                        <button onclick="saveBulkData()" id="saveBulkBtn" disabled class="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all">
+                            সেভ করুন (Save All)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Preview parsed elements before final save -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-2">
+                    <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wide">নিচের ডাটাগুলো ইমপোর্ট হবে (Preview List)</h4>
+                    <div class="max-h-60 overflow-y-auto custom-scroll space-y-1.5" id="parsedItemsPreviewList">
+                        <p class="text-xs text-gray-400 text-center py-6">কোনো টেক্সট পেস্ট করার পর 'চেক করুন' বাটনে চাপ দিন।</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: STATS (Analytical Dashboard) -->
             <div id="statsTab" class="tab-content space-y-4 pb-20">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
                     <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">Overall Distribution</h3>
@@ -142,27 +195,24 @@
                         </div>
                         <div class="bg-indigo-50 p-2.5 rounded-xl">
                             <p class="text-[10px] text-indigo-400 font-extrabold uppercase">CS. 14 Count</p>
-                            <p class="text-lg font-black text-indigo-800" id="totalCS14Count">130</p>
+                            <p class="text-lg font-black text-indigo-800" id="totalCS14Count">0</p>
                         </div>
                         <div class="bg-emerald-50 p-2.5 rounded-xl">
                             <p class="text-[10px] text-emerald-400 font-extrabold uppercase">CS. 23 Count</p>
-                            <p class="text-lg font-black text-emerald-800" id="totalCS23Count">32</p>
+                            <p class="text-lg font-black text-emerald-800" id="totalCS23Count">0</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Graphical Representation of Spool Frequency -->
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                    <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3 flex justify-between">
-                        <span>Spool Frequency (Top Active Spools)</span>
-                    </h3>
+                    <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">Spool Frequency (Top Active Spools)</h3>
                     <div class="space-y-3" id="frequencyChart">
                         <!-- Bars generated dynamically -->
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 3: SETTINGS -->
+            <!-- Tab 4: SETTINGS -->
             <div id="settingsTab" class="tab-content space-y-4 pb-20">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-4">
                     <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide border-b pb-2">App Customization</h3>
@@ -184,18 +234,21 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                    <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide mb-2">Export Log Data</h3>
-                    <p class="text-xs text-gray-500 mb-3">Copy complete production dataset as standardized CSV format to clipboard.</p>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
+                    <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide mb-2">Export & Database Reset</h3>
                     <button onclick="exportCSV()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                         Copy Raw Data CSV
+                    </button>
+                    <button onclick="clearFullDatabase()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 border border-red-200">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        Clear Full Database
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Float Action Button (Quick Add) -->
+        <!-- Float Action Button (Quick Add One) -->
         <button id="fabAdd" class="absolute bottom-20 right-4 w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-all z-40">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         </button>
@@ -246,11 +299,14 @@
             <span id="toastText">Action successful!</span>
         </div>
 
-        <!-- Bottom Tab Navigation -->
-        <nav class="bg-white border-t border-gray-200 grid grid-cols-3 h-16 shrink-0 z-30">
+        <nav class="bg-white border-t border-gray-200 grid grid-cols-4 h-16 shrink-0 z-30">
             <button onclick="switchTab('home')" id="tab-btn-home" class="flex flex-col items-center justify-center active-tab">
                 <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
                 <span class="text-[9px] mt-1 font-bold">HOME</span>
+            </button>
+            <button onclick="switchTab('import')" id="tab-btn-import" class="flex flex-col items-center justify-center text-gray-400">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span class="text-[9px] mt-1 font-bold">IMPORT</span>
             </button>
             <button onclick="switchTab('stats')" id="tab-btn-stats" class="flex flex-col items-center justify-center text-gray-400">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -264,7 +320,6 @@
     </div>
 
     <script>
-        // Integrated Comprehensive Database for CS.14 and CS.23
         const initialData = [
             // --- AREA: CS. 23 (32 Original Records) ---
             { date: "2026-05-16", area: "CS. 23", eb: "128357", spl: "001" },
@@ -300,7 +355,7 @@
             { date: "2026-05-16", area: "CS. 23", eb: "287501", spl: "001" },
             { date: "2026-05-16", area: "CS. 23", eb: "125322", spl: "002" },
 
-            // --- AREA: CS. 14 (130 New Handparsed Records) ---
+            // --- AREA: CS. 14 (130 Original Records) ---
             { date: "2026-05-16", area: "CS. 14", eb: "128374", spl: "002" },
             { date: "2026-05-16", area: "CS. 14", eb: "110365", spl: "008" },
             { date: "2026-05-16", area: "CS. 14", eb: "128337", spl: "002" },
@@ -370,7 +425,7 @@
             { date: "2026-05-16", area: "CS. 14", eb: "290347", spl: "002" },
             { date: "2026-05-16", area: "CS. 14", eb: "127763", spl: "001" },
             { date: "2026-05-16", area: "CS. 14", eb: "128337", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285749", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285749", font: "002", spl: "002" },
             { date: "2026-05-16", area: "CS. 14", eb: "290352", spl: "002" },
             { date: "2026-05-16", area: "CS. 14", eb: "288461", spl: "001" },
             { date: "2026-05-16", area: "CS. 14", eb: "127410", spl: "002" },
@@ -433,17 +488,18 @@
             { date: "2026-05-16", area: "CS. 14", eb: "190358", spl: "004" }
         ];
 
-        // System memory to allow dynamic additions (acts as a local state)
+        // System storage initialization
         let localDataStore = JSON.parse(localStorage.getItem('spool_pro_database')) || initialData;
         let selectedArea = 'ALL';
+        let analyzedTempItems = []; // Temporary holder for analyzed paste items
 
-        // Elements configuration
+        // HTML elements cache
         const searchInput = document.getElementById('searchInput');
         const dateInput = document.getElementById('dateInput');
         const clearDate = document.getElementById('clearDate');
         const listView = document.getElementById('listView');
         
-        // Modal & Add Elements
+        // Modal quick-adds
         const fabAdd = document.getElementById('fabAdd');
         const addModal = document.getElementById('addModal');
         const closeModal = document.getElementById('closeModal');
@@ -451,13 +507,12 @@
         const toast = document.getElementById('toast');
         const toastText = document.getElementById('toastText');
 
-        // Setting items
+        // Config items
         const settingPad = document.getElementById('settingPad');
         const settingHaptic = document.getElementById('settingHaptic');
 
         function triggerHapticFeedback() {
             if (settingHaptic.checked) {
-                // Short visual confirmation
                 document.body.classList.add('brightness-95');
                 setTimeout(() => document.body.classList.remove('brightness-95'), 80);
             }
@@ -473,12 +528,10 @@
             }, 2000);
         }
 
-        // Area filtering controller
         function setAreaFilter(area) {
             selectedArea = area;
             triggerHapticFeedback();
             
-            // Adjust Pill states visually
             const pills = {
                 'ALL': 'pill-ALL',
                 'CS. 14': 'pill-CS14',
@@ -494,7 +547,6 @@
                 }
             });
 
-            // Update subtitles dynamically
             document.getElementById('areaSubtitle').textContent = `AREA: ${area}`;
             document.getElementById('statActiveArea').textContent = area === 'ALL' ? 'All Areas' : area;
             document.getElementById('statIconArea').textContent = area === 'ALL' ? 'ALL' : area.replace(/\s+/g, '');
@@ -506,12 +558,10 @@
             const searchText = searchInput.value.toLowerCase().trim();
             const selectedDate = dateInput.value;
 
-            // Apply multi-layered filtering
             const filtered = localDataStore.filter(item => {
                 const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
                 const matchesDate = (!selectedDate || item.date === selectedDate);
                 
-                // EB matches anywhere or spool matches anywhere
                 const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
                 const matchesSearch = !searchText || 
                     item.eb.toLowerCase().includes(searchText) || 
@@ -520,7 +570,6 @@
                 return matchesArea && matchesDate && matchesSearch;
             });
 
-            // Update numerical stats counters
             document.getElementById('statCount').textContent = filtered.length;
             document.getElementById('totalCountBadge').textContent = `${filtered.length} ITEMS`;
 
@@ -531,13 +580,12 @@
                             <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         </div>
                         <p class="text-gray-600 text-sm font-bold">No Records Found</p>
-                        <p class="text-[11px] text-gray-400 mt-1">Try changing your filters or add a new entry below.</p>
+                        <p class="text-[11px] text-gray-400 mt-1">Try changing your filters or add/import entries.</p>
                     </div>
                 `;
                 return;
             }
 
-            // Populate cards inside list
             listView.innerHTML = filtered.map((item, idx) => {
                 const isCS14 = item.area === 'CS. 14';
                 const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
@@ -550,7 +598,7 @@
                             <div>
                                 <div class="flex items-center gap-1.5">
                                     <span class="text-[9px] ${isCS14 ? 'bg-indigo-600' : 'bg-blue-600'} text-white px-1.5 py-0.5 rounded font-bold">${item.area}</span>
-                                    <span class="text-[9px] text-gray-400 font-semibold uppercase">EB: ${idx + 1}</span>
+                                    <span class="text-[9px] text-gray-400 font-semibold uppercase">ID: #${filtered.length - idx}</span>
                                 </div>
                                 <p class="text-gray-800 font-extrabold text-base leading-tight mt-1">${item.eb}</p>
                             </div>
@@ -565,15 +613,13 @@
                 `;
             }).join('');
 
-            // Also render analytical elements if Stats tab is loaded
             renderCharts();
         }
 
         function renderCharts() {
-            // Count occurrence of spools
-            const spoolCounts = {};
             let countCS14 = 0;
             let countCS23 = 0;
+            const spoolCounts = {};
 
             localDataStore.forEach(item => {
                 if (item.area === 'CS. 14') countCS14++;
@@ -586,10 +632,9 @@
             document.getElementById('totalCS14Count').textContent = countCS14;
             document.getElementById('totalCS23Count').textContent = countCS23;
 
-            // Sort top spools by frequency
             const sortedSpools = Object.entries(spoolCounts)
                 .sort((a, b) => b[1] - a[1])
-                .slice(0, 5); // top 5 most frequent
+                .slice(0, 5);
 
             const maxCount = sortedSpools[0] ? sortedSpools[0][1] : 1;
             const chartContainer = document.getElementById('frequencyChart');
@@ -615,16 +660,148 @@
             }).join('');
         }
 
-        // Tab Switching Mechanism
+        function analyzeAndDisplay() {
+            triggerHapticFeedback();
+            const text = document.getElementById('bulkPasteInput').value;
+            if (!text.trim()) {
+                showToast("পেস্ট করার জন্য কোনো ডাটা পাওয়া যায়নি!");
+                return;
+            }
+
+            const lines = text.split('\n');
+            let detectedArea = "CS. 14"; // Default fallback
+            let detectedDate = "2026-05-16"; // Default fallback
+            const parsedItems = [];
+
+            // 1. Scan for Date and Area context first
+            for (let line of lines) {
+                line = line.trim();
+                
+                // Match Date like "16-05_2026" or "16-05-2026"
+                const dateMatch = line.match(/(\d{2})[-_](\d{2})[-_](\d{4})/);
+                if (dateMatch) {
+                    detectedDate = `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`;
+                }
+
+                // Match Area like "AREA : CS. 14" or "AREA : CS. 23"
+                const areaMatch = line.match(/(?:AREA|𝐀𝐑𝐄𝐀)\s*:\s*(CS\.\s*\d+)/i);
+                if (areaMatch) {
+                    detectedArea = areaMatch[1].toUpperCase();
+                }
+            }
+
+            // 2. Parse Spool details (EB and SPL lines)
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+
+                // Pattern A: Match "EB: 128357 SPL:001" (Both unicode and standard fonts)
+                const matchA = line.match(/(?:EB|𝐄𝐁)\s*[:;]?\s*(\d+)\s*(?:SPL|𝐒𝐏𝐋|𝐒𝐏l|SP[lI])\s*[:;]?\s*(\d+)/i);
+                if (matchA) {
+                    parsedItems.push({
+                        date: detectedDate,
+                        area: detectedArea,
+                        eb: matchA[1],
+                        spl: matchA[2]
+                    });
+                    continue;
+                }
+
+                // Pattern B: Special edge cases like "55285513.1" -> index 55, EB 285513, SPL 1
+                const matchSpecialCase = line.match(/^(\d{1,3})(\d{6})\.(\d+)/);
+                if (matchSpecialCase) {
+                    parsedItems.push({
+                        date: detectedDate,
+                        area: detectedArea,
+                        eb: matchSpecialCase[2],
+                        spl: matchSpecialCase[3]
+                    });
+                    continue;
+                }
+
+                // Pattern C: Match "1.128374.2" or "12 290209.3" or "81.127607 1"
+                const matchC = line.match(/^(\d+)[\s.]+(\d+)[.\s]+(\d+)/);
+                if (matchC) {
+                    parsedItems.push({
+                        date: detectedDate,
+                        area: detectedArea,
+                        eb: matchC[2],
+                        spl: matchC[3]
+                    });
+                    continue;
+                }
+            }
+
+            // Save in temporary storage
+            analyzedTempItems = parsedItems;
+
+            // Render auto detection badges
+            document.getElementById('detectArea').textContent = detectedArea;
+            document.getElementById('detectDate').textContent = detectedDate;
+            document.getElementById('detectCount').textContent = parsedItems.length;
+
+            const saveBtn = document.getElementById('saveBulkBtn');
+            const previewContainer = document.getElementById('parsedItemsPreviewList');
+
+            if (parsedItems.length > 0) {
+                saveBtn.removeAttribute('disabled');
+                
+                // Construct beautiful item previews
+                previewContainer.innerHTML = parsedItems.map((item, idx) => {
+                    const formatSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                    return `
+                        <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-1.5 py-0.5 rounded">#${idx + 1}</span>
+                                <span class="font-extrabold text-gray-800">EB: ${item.eb}</span>
+                            </div>
+                            <span class="bg-gray-800 text-white font-black text-[9px] px-2 py-0.5 rounded">SPL: ${formatSpl}</span>
+                        </div>
+                    `;
+                }).join('');
+                
+                showToast(`Parsed ${parsedItems.length} records successfully!`);
+            } else {
+                saveBtn.setAttribute('disabled', 'true');
+                previewContainer.innerHTML = `
+                    <p class="text-xs text-red-500 text-center py-6 font-bold">মেসেজ থেকে কোনো ডাটা সনাক্ত করা যায়নি। অনুগ্রহ করে ফরম্যাটটি যাচাই করুন।</p>
+                `;
+                showToast("কোনো ডাটা পাওয়া যায়নি!");
+            }
+        }
+
+        function saveBulkData() {
+            triggerHapticFeedback();
+            if (analyzedTempItems.length === 0) return;
+
+            // Inject bulk items to the start of database
+            localDataStore = [...analyzedTempItems, ...localDataStore];
+            localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
+
+            // Clear pasteboard screen
+            document.getElementById('bulkPasteInput').value = '';
+            document.getElementById('detectArea').textContent = '-';
+            document.getElementById('detectDate').textContent = '-';
+            document.getElementById('detectCount').textContent = '0';
+            document.getElementById('parsedItemsPreviewList').innerHTML = `
+                <p class="text-xs text-gray-400 text-center py-6">কোনো টেক্সট পেস্ট করার পর 'চেক করুন' বাটনে চাপ দিন।</p>
+            `;
+            document.getElementById('saveBulkBtn').setAttribute('disabled', 'true');
+
+            showToast(`${analyzedTempItems.length} records saved to database! ✅`);
+            analyzedTempItems = [];
+            
+            renderData();
+            switchTab('home');
+        }
+
         function switchTab(tabName) {
             triggerHapticFeedback();
             
-            // Toggle actual content
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById(`${tabName}Tab`).classList.add('active');
 
-            // Switch active visual representation in navigation
-            const tabs = ['home', 'stats', 'settings'];
+            const tabs = ['home', 'import', 'stats', 'settings'];
             tabs.forEach(tab => {
                 const btn = document.getElementById(`tab-btn-${tab}`);
                 if (tab === tabName) {
@@ -635,7 +812,7 @@
             });
         }
 
-        // Search & Filter event attachments
+        // Event hooks
         searchInput.addEventListener('input', renderData);
         dateInput.addEventListener('change', renderData);
         clearDate.addEventListener('click', () => {
@@ -644,10 +821,8 @@
             renderData();
         });
 
-        // Toggle elements for settings
         settingPad.addEventListener('change', renderData);
 
-        // Share/Export feature (Compiles text format for easy sharing)
         document.getElementById('shareData').addEventListener('click', () => {
             triggerHapticFeedback();
             const filtered = localDataStore.filter(item => {
@@ -667,7 +842,6 @@
                 textContent += `${index + 1}. EB: ${item.eb} | SPL: ${formattedSpl} (${item.area})\n`;
             });
 
-            // Modern Copy mechanism safely using hidden elements (works universally in Webview/IFrames)
             const el = document.createElement('textarea');
             el.value = textContent;
             document.body.appendChild(el);
@@ -678,7 +852,7 @@
             showToast("Copied to clipboard! 📋");
         });
 
-        // Quick Add Floating Actions
+        // Add manual single item modal controller
         fabAdd.addEventListener('click', () => {
             triggerHapticFeedback();
             addModal.classList.remove('hidden');
@@ -700,27 +874,17 @@
                 return;
             }
 
-            // Create record
-            const newRecord = {
-                date: date,
-                area: area,
-                eb: eb,
-                spl: spl
-            };
-
-            localDataStore.unshift(newRecord); // Add to beginning
+            const newRecord = { date, area, eb, spl };
+            localDataStore.unshift(newRecord);
             localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
             
-            // Clean up modal inputs
             document.getElementById('modalEB').value = '';
             document.getElementById('modalSPL').value = '';
-            
             addModal.classList.add('hidden');
             showToast("Saved successfully! ✅");
             renderData();
         });
 
-        // Export system configurations to raw CSV
         function exportCSV() {
             triggerHapticFeedback();
             let csv = "Date,Area,EB Number,Spool ID\n";
@@ -738,7 +902,18 @@
             showToast("Database copied in CSV!");
         }
 
-        // Initialize App on window load
+        function clearFullDatabase() {
+            triggerHapticFeedback();
+            const check = confirm("আপনি কি ডাটাবেজের সমস্ত ডাটা সম্পূর্ণভাবে মুছে ফেলতে চান?");
+            if (check) {
+                localDataStore = [];
+                localStorage.setItem('spool_pro_database', JSON.stringify([]));
+                showToast("Database Cleared Successfully!");
+                renderData();
+            }
+        }
+
+        // Initialize application
         window.onload = function() {
             renderData();
         };
