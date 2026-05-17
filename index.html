@@ -2,65 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Spool App Pro - Multiarea</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { 
+        /* Mobile Dynamic Viewport Fixes */
+        html, body {
+            height: 100%;
+            height: -webkit-fill-available;
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #0f172a; /* Slate 900 for modern back-drop */
             font-family: 'Inter', sans-serif; 
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
+
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            height: 100vh;
+            height: 100%;
+            height: -webkit-fill-available;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             background-color: #f8fafc;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
         }
+
         .custom-scroll::-webkit-scrollbar {
             display: none;
         }
+        
         .active-tab {
             color: #2563eb;
-            border-top: 2px solid #2563eb;
+            border-top: 3px solid #2563eb;
         }
+
         input:focus, select:focus, textarea:focus {
             outline: none;
         }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         .item-card {
             animation: slideIn 0.2s ease-out forwards;
         }
+
         .tab-content {
             display: none;
-        }
-        .tab-content.active {
-            display: flex;
             flex-direction: column;
             height: 100%;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* Safe margins for mobile dynamic screens */
+        .bottom-nav {
+            padding-bottom: env(safe-area-inset-bottom, 12px);
+            box-shadow: 0 -4px 20px -5px rgba(0, 0, 0, 0.08);
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-slate-900">
 
-    <div class="app-container shadow-2xl relative overflow-hidden">
+    <div class="app-container overflow-hidden">
         
-        <header class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-4 pt-5 pb-5 rounded-b-[2rem] shadow-lg shrink-0">
+        <!-- App Header (Fixed at top) -->
+        <header class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-4 pt-5 pb-5 rounded-b-[2rem] shadow-md shrink-0 z-30">
             <div class="flex justify-between items-center mb-3">
                 <div>
                     <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest" id="areaSubtitle">AREA: ALL</p>
                     <h1 class="text-xl font-black tracking-tight flex items-center gap-2">
                         Production Log Pro
-                        <span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">V2.1</span>
+                        <span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">V2.2</span>
                     </h1>
                 </div>
                 <div class="bg-white/10 px-3 py-1 rounded-full border border-white/20">
@@ -74,7 +103,7 @@
                     <input type="text" id="searchInput" 
                            placeholder="Search EB or Spool (SPL)..." 
                            class="w-full bg-white/10 border border-white/20 rounded-xl py-2.5 pl-10 pr-4 text-white text-sm placeholder-white/60 focus:bg-white focus:text-gray-900 focus:shadow-inner transition-all">
-                    <div class="absolute left-3 top-3">
+                    <div class="absolute left-3 top-3.5">
                         <svg class="h-4 w-4 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                 </div>
@@ -101,17 +130,18 @@
             </div>
         </header>
 
-        <div class="flex-grow overflow-y-auto custom-scroll relative p-3">
+        <!-- Main Content Area (Scrolls separately) -->
+        <div class="flex-grow relative overflow-hidden p-3 pb-0">
             
             <!-- Tab 1: HOME (List View) -->
-            <div id="homeTab" class="tab-content active space-y-3 pb-20">
-                <div class="grid grid-cols-2 gap-2 shrink-0">
+            <div id="homeTab" class="tab-content active custom-scroll pb-24">
+                <div class="grid grid-cols-2 gap-2 shrink-0 mb-3">
                     <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
                         <div>
                             <p class="text-[10px] text-gray-400 font-bold uppercase">Active Filter</p>
                             <p class="text-sm font-extrabold text-blue-900" id="statActiveArea">All Areas</p>
                         </div>
-                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xs" id="statIconArea">ALL</div>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-[10px]" id="statIconArea">ALL</div>
                     </div>
                     <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
                         <div>
@@ -127,8 +157,8 @@
                 </div>
             </div>
 
-            <!-- Tab 2: BULK IMPORT (Paste Message directly) -->
-            <div id="importTab" class="tab-content space-y-4 pb-20">
+            <!-- Tab 2: BULK IMPORT -->
+            <div id="importTab" class="tab-content custom-scroll pb-24">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
@@ -136,16 +166,14 @@
                         </div>
                         <div>
                             <h3 class="text-sm font-black text-gray-800">একসাথে পেস্ট করুন (Bulk Import)</h3>
-                            <p class="text-[10px] text-gray-400">মেসেজটি সরাসরি কপি করে এখানে পেস্ট করে দিন</p>
+                            <p class="text-[10px] text-gray-400">মেসেজটি সরাসরি কপি করে নিচে পেস্ট করে দিন</p>
                         </div>
                     </div>
 
-                    <!-- Input Box -->
-                    <textarea id="bulkPasteInput" rows="8" 
+                    <textarea id="bulkPasteInput" rows="6" 
                               placeholder="১টি মেসেজ সরাসরি পেস্ট করুন...&#10;যেমন:&#10;16-05_2026&#10;AREA : CS. 14&#10;1.128374.2&#10;2.110365.8" 
                               class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs text-gray-700 font-mono focus:bg-white focus:border-blue-500 transition-all"></textarea>
                     
-                    <!-- Real-time parsing detection details -->
                     <div class="bg-slate-50 p-3 rounded-xl border border-gray-100 text-xs space-y-1.5" id="parsedDetectionResult">
                         <p class="text-gray-500 font-semibold">ডিটেকশন রেজাল্ট (Auto Detected):</p>
                         <div class="grid grid-cols-3 gap-2 pt-1 text-[11px] font-bold">
@@ -164,7 +192,6 @@
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
                     <div class="flex gap-2">
                         <button onclick="analyzeAndDisplay()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all">
                             চেক করুন (Analyze)
@@ -175,8 +202,7 @@
                     </div>
                 </div>
 
-                <!-- Preview parsed elements before final save -->
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-2">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-2 mt-3">
                     <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wide">নিচের ডাটাগুলো ইমপোর্ট হবে (Preview List)</h4>
                     <div class="max-h-60 overflow-y-auto custom-scroll space-y-1.5" id="parsedItemsPreviewList">
                         <p class="text-xs text-gray-400 text-center py-6">কোনো টেক্সট পেস্ট করার পর 'চেক করুন' বাটনে চাপ দিন।</p>
@@ -185,8 +211,8 @@
             </div>
 
             <!-- Tab 3: STATS (Analytical Dashboard) -->
-            <div id="statsTab" class="tab-content space-y-4 pb-20">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+            <div id="statsTab" class="tab-content custom-scroll pb-24">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-3">
                     <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">Overall Distribution</h3>
                     <div class="grid grid-cols-3 gap-2 text-center">
                         <div class="bg-blue-50 p-2.5 rounded-xl">
@@ -213,8 +239,8 @@
             </div>
 
             <!-- Tab 4: SETTINGS -->
-            <div id="settingsTab" class="tab-content space-y-4 pb-20">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+            <div id="settingsTab" class="tab-content custom-scroll pb-24">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-4 mb-3">
                     <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide border-b pb-2">App Customization</h3>
                     
                     <div class="flex justify-between items-center">
@@ -299,7 +325,8 @@
             <span id="toastText">Action successful!</span>
         </div>
 
-        <nav class="bg-white border-t border-gray-200 grid grid-cols-4 h-16 shrink-0 z-30">
+        <!-- Tab Bar Navigation (Fixed Bottom Layout) -->
+        <nav class="bottom-nav bg-white border-t border-gray-200 grid grid-cols-4 h-16 shrink-0 z-40 mt-auto">
             <button onclick="switchTab('home')" id="tab-btn-home" class="flex flex-col items-center justify-center active-tab">
                 <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
                 <span class="text-[9px] mt-1 font-bold">HOME</span>
@@ -425,7 +452,7 @@
             { date: "2026-05-16", area: "CS. 14", eb: "290347", spl: "002" },
             { date: "2026-05-16", area: "CS. 14", eb: "127763", spl: "001" },
             { date: "2026-05-16", area: "CS. 14", eb: "128337", spl: "001" },
-            { date: "2026-05-16", area: "CS. 14", eb: "285749", font: "002", spl: "002" },
+            { date: "2026-05-16", area: "CS. 14", eb: "285749", spl: "002" },
             { date: "2026-05-16", area: "CS. 14", eb: "290352", spl: "002" },
             { date: "2026-05-16", area: "CS. 14", eb: "288461", spl: "001" },
             { date: "2026-05-16", area: "CS. 14", eb: "127410", spl: "002" },
@@ -491,7 +518,7 @@
         // System storage initialization
         let localDataStore = JSON.parse(localStorage.getItem('spool_pro_database')) || initialData;
         let selectedArea = 'ALL';
-        let analyzedTempItems = []; // Temporary holder for analyzed paste items
+        let analyzedTempItems = []; 
 
         // HTML elements cache
         const searchInput = document.getElementById('searchInput');
@@ -669,8 +696,8 @@
             }
 
             const lines = text.split('\n');
-            let detectedArea = "CS. 14"; // Default fallback
-            let detectedDate = "2026-05-16"; // Default fallback
+            let detectedArea = "CS. 14"; 
+            let detectedDate = "2026-05-16"; 
             const parsedItems = [];
 
             // 1. Scan for Date and Area context first
@@ -695,7 +722,7 @@
                 line = line.trim();
                 if (!line) continue;
 
-                // Pattern A: Match "EB: 128357 SPL:001" (Both unicode and standard fonts)
+                // Pattern A: Match "EB: 128357 SPL:001"
                 const matchA = line.match(/(?:EB|𝐄𝐁)\s*[:;]?\s*(\d+)\s*(?:SPL|𝐒𝐏𝐋|𝐒𝐏l|SP[lI])\s*[:;]?\s*(\d+)/i);
                 if (matchA) {
                     parsedItems.push({
@@ -719,8 +746,8 @@
                     continue;
                 }
 
-                // Pattern C: Match "1.128374.2" or "12 290209.3" or "81.127607 1"
-                const matchC = line.match(/^(\d+)[\s.]+(\d+)[.\s]+(\d+)/);
+                // Pattern C: Match "1.128374.2" or "12 290209.3" or "81.127607 1" or "81.127607;1"
+                const matchC = line.match(/^(\d+)[\s.]+(\d+)[.\s;]+(\d+)/);
                 if (matchC) {
                     parsedItems.push({
                         date: detectedDate,
@@ -732,7 +759,6 @@
                 }
             }
 
-            // Save in temporary storage
             analyzedTempItems = parsedItems;
 
             // Render auto detection badges
@@ -746,7 +772,6 @@
             if (parsedItems.length > 0) {
                 saveBtn.removeAttribute('disabled');
                 
-                // Construct beautiful item previews
                 previewContainer.innerHTML = parsedItems.map((item, idx) => {
                     const formatSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
                     return `
@@ -774,7 +799,6 @@
             triggerHapticFeedback();
             if (analyzedTempItems.length === 0) return;
 
-            // Inject bulk items to the start of database
             localDataStore = [...analyzedTempItems, ...localDataStore];
             localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
 
@@ -913,7 +937,6 @@
             }
         }
 
-        // Initialize application
         window.onload = function() {
             renderData();
         };
