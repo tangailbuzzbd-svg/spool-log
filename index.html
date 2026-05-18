@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Spool App Pro - Ishaque Ali Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;950&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800;950&display=swap" rel="stylesheet">
     
     <style>
         /* Mobile Dynamic Viewport & Layout Fixes - Browser screen scale fix */
@@ -88,7 +88,7 @@
             box-shadow: 0 -4px 20px -5px rgba(0, 0, 0, 0.08);
             z-index: 40;
             background-color: #ffffff;
-            height: 4.8rem; /* Raised for easier touch targets */
+            height: 4.5rem; /* Raised for easier touch targets */
         }
 
         /* Haptic tap animations */
@@ -103,56 +103,41 @@
     <div class="app-container flex flex-col overflow-hidden">
         
         <!-- App Header (Top Section - Dynamic Sticky Compact) -->
-        <header class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-4 pt-6 pb-6 rounded-b-[2rem] shadow-md shrink-0 z-30">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <p class="text-blue-100 text-xs font-black uppercase tracking-widest animate-pulse" id="areaSubtitle">AREA: ALL</p>
-                    <h1 class="text-2xl font-black tracking-tight flex items-center gap-2" data-translate="title">
-                        Production Log Pro
-                    </h1>
+        <header class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-4 pt-5 pb-5 rounded-b-[1.8rem] shadow-md shrink-0 z-30">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center gap-2">
+                    <div>
+                        <h1 class="text-lg font-black tracking-tight" data-translate="title">Production Log</h1>
+                        <!-- Restored Area Subtitle container to prevent JavaScript "Cannot set properties of null" error -->
+                        <p class="text-blue-100 text-[10px] font-bold uppercase tracking-widest animate-pulse" id="areaSubtitle">AREA: ALL</p>
+                    </div>
+                    
+                    <!-- Compact Quick Add and Share buttons inside Header -->
+                    <div class="flex items-center gap-1 bg-white/10 p-0.5 rounded-lg border border-white/10 shrink-0">
+                        <button id="headerAddBtn" class="hover:bg-white/10 p-1.5 rounded-md active-press transition-all" title="Add Single Spool">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+                        </button>
+                        <button id="shareData" class="hover:bg-white/10 p-1.5 rounded-md active-press transition-all" title="Share Report">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.136-2.068m0 5.652l-4.136-2.068a3 3 0 110-3.176m4.136 2.068a3 3 0 114.773 2.628l-4.136-2.068M3 12a3 3 0 106 0 3 3 0 00-6 0zm11-6a3 3 0 116 0 3 3 0 01-6 0zm5 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </button>
+                    </div>
                 </div>
                 
-                <!-- Multilingual Switcher - EN | বাং (Bangla Latin) Toggle Pill -->
-                <div class="flex items-center gap-2.5">
-                    <div class="flex bg-white/10 p-1 rounded-xl border border-white/20 text-xs font-black shrink-0">
-                        <button onclick="setLanguage('en')" id="lang-btn-en" class="px-3 py-1.5 rounded-lg transition-all active-press">EN</button>
-                        <button onclick="setLanguage('bn')" id="lang-btn-bn" class="px-3 py-1.5 rounded-lg transition-all active-press">বাং</button>
+                <!-- Multilingual Switcher - EN | বাং (Bangla Script) Toggle Pill -->
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex bg-white/10 p-0.5 rounded-lg border border-white/20 text-[10px] font-bold shrink-0">
+                        <button onclick="setLanguage('en')" id="lang-btn-en" class="px-2.5 py-1 rounded transition-all active-press">EN</button>
+                        <button onclick="setLanguage('bn')" id="lang-btn-bn" class="px-2.5 py-1 rounded transition-all active-press">বাং</button>
                     </div>
-                    <div class="bg-white/10 px-3 py-2 rounded-full border border-white/20 shrink-0 shadow-sm">
-                        <span class="text-xs font-black" id="totalCountBadge">0 SPOOLS</span>
+                    <div class="bg-white/10 px-2 py-1 rounded-full border border-white/20 shrink-0 shadow-sm">
+                        <span class="text-[10px] font-black" id="totalCountBadge">0 SPOOLS</span>
                     </div>
                 </div>
             </div>
             
-            <!-- Search & Filters Container (Resized larger for easy reading) -->
-            <div class="space-y-3">
-                <div class="relative">
-                    <input type="text" id="searchInput" 
-                           placeholder="Search EB or Spool (SPL)..." 
-                           class="w-full bg-white/15 border border-white/25 rounded-2xl py-4 pl-12 pr-4 text-white text-base placeholder-white/60 focus:bg-white focus:text-gray-900 focus:shadow-inner transition-all font-bold">
-                    <div class="absolute left-4 top-4.5">
-                        <svg class="h-5 w-5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                </div>
-                
-                <div class="flex gap-2.5">
-                    <div class="relative flex-grow">
-                        <input type="date" id="dateInput" value="2026-05-16"
-                               class="w-full bg-white/15 border border-white/25 rounded-2xl py-3.5 px-4 text-white text-base font-black focus:bg-white focus:text-gray-900 transition-all">
-                    </div>
-                    <button id="clearDate" class="bg-white/10 hover:bg-white/20 p-3.5 rounded-2xl border border-white/20 transition-all flex items-center justify-center active-press">
-                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                    <button id="shareData" class="bg-white/15 hover:bg-white/25 px-4 py-3.5 rounded-2xl border border-white/20 transition-all flex items-center gap-1.5 text-xs font-black text-white active-press">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.136-2.068m0 5.652l-4.136-2.068a3 3 0 110-3.176m4.136 2.068a3 3 0 114.773 2.628l-4.136-2.068M3 12a3 3 0 106 0 3 3 0 00-6 0zm11-6a3 3 0 116 0 3 3 0 01-6 0zm5 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        <span data-translate="shareBtn">Share</span>
-                    </button>
-                </div>
-
-                <!-- Dynamic Area Buttons -->
-                <div class="flex gap-2 pt-1 overflow-x-auto custom-scroll" id="areaPillsContainer">
-                    <!-- Area list dynamically loaded from Local Storage entries -->
-                </div>
+            <!-- Dynamic Area Pills (Now the only content in the header making it incredibly slim) -->
+            <div class="flex gap-1.5 pt-1 overflow-x-auto custom-scroll" id="areaPillsContainer">
+                <!-- Area list dynamically loaded from Local Storage entries -->
             </div>
         </header>
 
@@ -161,25 +146,25 @@
             
             <!-- Screen 1: Home View -->
             <div id="homeTab" class="tab-content active custom-scroll">
-                <div class="grid grid-cols-2 gap-3 shrink-0 mb-4">
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+                <div class="grid grid-cols-2 gap-3 shrink-0 mb-3">
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
                         <div>
-                            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider" data-translate="statActiveAreaLabel">Active Filter</p>
-                            <p class="text-base font-black text-blue-900 mt-0.5" id="statActiveArea">All Areas</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider" data-translate="statActiveAreaLabel">Active Filter</p>
+                            <p class="text-sm font-black text-blue-900 mt-0.5" id="statActiveArea">All Areas</p>
                         </div>
-                        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-black text-xs" id="statIconArea">ALL</div>
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-black text-[10px]" id="statIconArea">ALL</div>
                     </div>
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
                         <div>
-                            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider" data-translate="statTotalItemsLabel">Total Items</p>
-                            <p class="text-base font-black text-indigo-900 mt-0.5" id="statCount">0</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider" data-translate="statTotalItemsLabel">Total Items</p>
+                            <p class="text-sm font-black text-indigo-900 mt-0.5" id="statCount">0</p>
                         </div>
-                        <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-xs">SUM</div>
+                        <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-xs">SUM</div>
                     </div>
                 </div>
 
                 <!-- Database items list -->
-                <div class="space-y-3 pb-4" id="listView">
+                <div class="space-y-2.5 pb-4" id="listView">
                     <!-- Cards will be populated from localStorage -->
                 </div>
             </div>
@@ -190,18 +175,26 @@
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2.5">
                             <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                             </div>
                             <div>
-                                <h3 class="text-base font-black text-gray-800" data-translate="bulkImportTitle">Bulk Import (Paste)</h3>
-                                <p class="text-xs text-gray-400" data-translate="bulkImportSub">Copy and paste your message directly below</p>
+                                <h3 class="text-sm font-black text-gray-800" data-translate="bulkImportTitle">Bulk Import (Paste)</h3>
+                                <p class="text-[10px] text-gray-400" data-translate="bulkImportSub">Copy and paste your message directly below</p>
                             </div>
                         </div>
-                        <!-- One-Tap Clear Text Box Button -->
-                        <button onclick="clearImportBox()" class="text-xs text-red-500 bg-red-50 hover:bg-red-100 font-extrabold px-3 py-2 rounded-xl active-press transition-all flex items-center gap-1.5 shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            <span data-translate="btnClear">Clear</span>
-                        </button>
+                        <!-- Compact Paste & Clear Header Actions -->
+                        <div class="flex gap-2">
+                            <!-- New Paste from Clipboard Button -->
+                            <button onclick="pasteFromClipboard()" class="text-xs text-blue-600 bg-blue-50 hover:bg-blue-100 font-extrabold px-3 py-1.5 rounded-xl active-press transition-all flex items-center gap-1 shadow-sm">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                <span data-translate="btnPaste">Paste</span>
+                            </button>
+                            <!-- One-Tap Clear Text Box Button -->
+                            <button onclick="clearImportBox()" class="text-xs text-red-500 bg-red-50 hover:bg-red-100 font-extrabold px-3 py-1.5 rounded-xl active-press transition-all flex items-center gap-1 shadow-sm">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                <span data-translate="btnClear">Clear</span>
+                            </button>
+                        </div>
                     </div>
 
                     <textarea id="bulkPasteInput" rows="5" 
@@ -227,13 +220,13 @@
                         </div>
                     </div>
 
-                    <!-- Split Buttons Flow (Analyze & Save) -->
+                    <!-- Split Buttons Flow (Analyze & Save) - Compact Styles Fix -->
                     <div class="flex gap-2.5">
-                        <button onclick="analyzeAndDisplay()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition-all active-press" data-translate="btnAnalyze">
+                        <button onclick="analyzeAndDisplay()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-extrabold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all active-press" data-translate="btnAnalyze">
                             Analyze
                         </button>
-                        <button onclick="saveBulkData()" id="saveBulkBtn" disabled class="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-extrabold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition-all active-press flex items-center justify-center gap-2">
-                            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                        <button onclick="saveBulkData()" id="saveBulkBtn" disabled class="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-extrabold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all active-press flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                             <span id="saveBulkBtnText" data-translate="btnSaveAll">Save All</span>
                         </button>
                     </div>
@@ -310,11 +303,11 @@
 
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3 pb-4">
                     <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide mb-2" data-translate="settingsExportSection">Export & Database Reset</h3>
-                    <button onclick="exportCSV()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-black py-3.5 rounded-2xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2.5 active-press shadow-sm">
+                    <button onclick="exportCSV()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-black py-3 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2.5 active-press shadow-sm">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                         <span data-translate="settingsCopyCsv">Copy Raw Data CSV</span>
                     </button>
-                    <button onclick="clearFullDatabase()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-black py-3.5 rounded-2xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2.5 border border-red-200 active-press shadow-sm">
+                    <button onclick="clearFullDatabase()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-black py-3 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2.5 border border-red-200 active-press shadow-sm">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         <span data-translate="settingsClearDb">Clear Full Database</span>
                     </button>
@@ -322,10 +315,53 @@
             </div>
         </div>
 
-        <!-- Floating Quick-Add Button (Raised and oversized for Abbu's comfort) -->
-        <button id="fabAdd" class="absolute bottom-28 right-6 w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center shadow-2xl active-press transition-all z-40 border-4 border-white/20">
-            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <!-- Floating Search/Filter Trigger Button (Replaces plus with a beautiful search button) -->
+        <button id="fabSearch" class="absolute bottom-24 right-5 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center shadow-2xl active-press transition-all z-40 border-4 border-white/20">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </button>
+
+        <!-- Search & Filter Slide-up Panel (Bottom Sheet style) -->
+        <div id="searchFilterModal" class="hidden absolute inset-0 bg-black/60 z-50 flex items-end justify-center">
+            <div class="bg-white w-full rounded-t-[2rem] p-5 pb-8 space-y-4 animate-slideIn">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-base font-black text-gray-900" data-translate="searchFilterTitle">Search & Filter</h3>
+                    <button id="closeSearchModal" class="p-2 rounded-full bg-gray-100 text-gray-500 active-press">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- Search Input -->
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1.5" data-translate="searchLabel">Search EB or Spool</label>
+                        <div class="relative">
+                            <input type="text" id="searchInput" 
+                                   placeholder="Type EB or Spool SPL..." 
+                                   class="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 pl-10 pr-4 text-base text-gray-800 font-semibold focus:bg-white focus:border-blue-500 transition-all">
+                            <div class="absolute left-3 top-3.5">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Date Input -->
+                    <div>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1.5" data-translate="dateLabel">Filter by Date</label>
+                        <div class="flex gap-2">
+                            <input type="date" id="dateInput" value="2026-05-16"
+                                   class="flex-grow bg-gray-50 border border-gray-200 rounded-2xl py-3 px-4 text-base font-black text-gray-855 focus:bg-white focus:border-blue-500 transition-all">
+                            <button id="clearDate" class="bg-gray-100 hover:bg-gray-200 p-3 rounded-2xl border border-gray-200 transition-all flex items-center justify-center active-press">
+                                <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="applySearchBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl text-sm tracking-wider uppercase transition-all shadow-md active-press" data-translate="applyFilters">
+                    Apply Filter / খুজুন
+                </button>
+            </div>
+        </div>
 
         <!-- Quick Add Modal Overlay -->
         <div id="addModal" class="hidden absolute inset-0 bg-black/60 z-50 flex items-end justify-center">
@@ -362,7 +398,7 @@
                     </div>
                 </div>
 
-                <button id="saveModalBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl text-sm tracking-wider uppercase transition-all shadow-md active-press" data-translate="addModalSave">
+                <button id="saveModalBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3.5 rounded-xl text-xs tracking-wider uppercase transition-all shadow-md active-press" data-translate="addModalSave">
                     Save Record
                 </button>
             </div>
@@ -446,8 +482,8 @@
                 <span class="text-xs mt-1 font-black">STATS</span>
             </button>
             <button onclick="switchTab('settings')" id="tab-btn-settings" class="flex flex-col items-center justify-center text-gray-400 active-press">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31(2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span class="text-xs mt-1 font-black">CONFIG</span>
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31(2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span class="text-[9px] mt-1 font-bold">CONFIG</span>
             </button>
         </nav>
     </div>
@@ -469,10 +505,10 @@
         let analyzedTempItems = []; 
         let currentLang = localStorage.getItem('spool_app_lang') || 'en';
 
-        // Translation Maps - Banglish (Latin) used for BN language
+        // Translation Maps - Proper Bengali Script (বাংলা লিপি) applied for BN language
         const translations = {
             en: {
-                title: "Production Log Pro",
+                title: "Production Log",
                 subtitlePrefix: "AREA: ",
                 allAreas: "ALL AREAS",
                 spoolsSuffix: " SPOOLS",
@@ -531,6 +567,7 @@
                 toastCsvCopied: "Database copied in CSV!",
                 toastDbCleared: "All data deleted successfully! 🧹",
                 btnClear: "Clear",
+                btnPaste: "Paste",
                 localSaveTitle: "Browser Local Storage Active",
                 localSaveSub: "Your data is safe. Closing browser or mobile will not delete your entries!",
                 clearFilterBtn: "Clear Date Filter",
@@ -538,76 +575,85 @@
                 foundOnOtherDatesSub: "Apnar select kora date filter-er baire ei data ache.",
                 welcomeHeader: "Assalamu Alaikum, MD ISHAQUE ALI!",
                 welcomeSub: "Apnar shob spool data safe ache. Ajker kajer jonno ready to?",
-                welcomeStartBtn: "Kaj Shuru Korun (Start Work)"
+                welcomeStartBtn: "Kaj Shuru Korun (Start Work)",
+                searchFilterTitle: "Search & Filter",
+                searchLabel: "Search EB or Spool",
+                dateLabel: "Filter by Date",
+                applyFilters: "Apply Filter / খুজুন"
             },
             bn: {
-                title: "Production Log Pro",
-                subtitlePrefix: "Area: ",
-                allAreas: "Shob Area",
-                spoolsSuffix: " Ti Spool",
-                itemsSuffix: " Ti Record",
-                searchPlaceholder: "EB otsbba Spool (SPL) diye search korun...",
-                shareBtn: "Share",
-                statActiveAreaLabel: "Active Filter",
-                statTotalItemsLabel: "Mot Record",
-                statAllAreas: "Shob Area",
-                noRecordsFound: "Kono Record Paoya Jayni",
-                noRecordsSub: "Anugrah kore filter poriborton korun..." ,
-                bulkImportTitle: "Ekshathe Paste Korun",
-                bulkImportSub: "Paste korar por 'Check Korun' botone chap din",
-                bulkPlaceholder: "WhatsApp ba chat message-ti shorasori paste korun...\nJemon:\n16-05_2026\nAREA : CS. 23\n14) 290540---6\n1. 128374 ... 2",
-                detectResultTitle: "Detection Result (Auto Detected):",
-                detectArea: "Area",
-                detectDate: "Tarikh",
-                detectSpools: "Spool",
-                btnAnalyze: "Check Korun (Analyze)",
-                btnSaveAll: "Save Korun (Save All)",
-                btnSaveSpoolsCount: "Save Korun ({count}ti Spool)",
-                importPreviewHeader: "Import Preview List",
-                importPreviewEmpty: "Text paste kore 'Check Korun' botone chap dile ekhane list ashbe.",
-                importPreviewError: "Message theke kono data detect kora jayni. Anugrah kore dot (...) ba dash (----) format bebohar korun.",
-                statsOverallDistribution: "Sarbik Distribution",
-                statsTotalArea: "Mot Area",
-                statsCs14Items: "CS. 14 Record",
-                statsCs23Items: "CS. 23 Record",
-                statsSpoolFrequency: "Spool Usage Rate",
-                statsNoAnalysis: "Bishleshon korar moto data nei.",
-                settingsCustomization: "App Customization",
-                settingsAutoPad: "Spool ID Padding",
-                settingsAutoPadSub: "Spool number-er agey shunno boshun (Jemon: 1 -> 001)",
-                settingsHaptic: "Haptic Vibration",
-                settingsHapticSub: "Button touch korle light flash effect",
-                settingsExportSection: "Export o Database Reset",
-                settingsCopyCsv: "Raw Data Copy Korun (CSV)",
-                settingsClearDb: "Shompurno Database Muchhun",
-                addModalTitle: "Notun Spool Entry Jog Korun",
-                addModalSelectArea: "Area Nirbachon Korun",
-                addModalEb: "EB Number",
-                addModalSpl: "Spool Number (SPL)",
-                addModalDate: "Tarikh",
-                addModalSave: "Save Korun",
-                confirmResetTitle: "Database Reset",
-                confirmResetMsg: "Apni ki nishchitbhabe shob data muche felte chan? Eti ar phiriye ana shombhob hobe na.",
-                confirmResetCancel: "Batil",
-                confirmResetDelete: "Muche Felun",
-                toastNoDataToImport: "Paste korar box-ti phaka!",
-                toastParsedSuccess: "{count} Ti Data Sanakt hoyeche!",
-                toastSavedSuccess: "{count} Ti Record Shofolbhabe Save Hoyeche! ✅",
-                toastNoDataToShare: "Share korar moto kono data nei!",
-                toastCopiedClipboard: "Clipboard-e copy kora hoyeche! 📋",
-                toastAllFieldsRequired: "Anugrah kore shob ghor puron korun!",
-                toastRecordSaved: "Record shofolbhabe save hoyeche! ✅",
-                toastCsvCopied: "Database CSV format-e copy kora hoyeche!",
-                toastDbCleared: "Shob data muche fela hoyeche! 🧹",
-                btnClear: "Muchhun",
-                localSaveTitle: "Browser Local Storage Active",
-                localSaveSub: "Apnar data safe ache. Mobile/browser bondho korle-o data harabe na!",
-                clearFilterBtn: "Date Filter Clear Korun",
-                foundOnOtherDates: "Onno Tarikh-e {count} ti record paoya gese!",
-                foundOnOtherDatesSub: "Apnar select kora date filter-er baire ei data ache.",
-                welcomeHeader: "Assalamu Alaikum, MD ISHAQUE ALI!",
-                welcomeSub: "Apnar shob spool data safe ache. Ajker kajer jonno ready to?",
-                welcomeStartBtn: "Kaj Shuru Korun (Start Work)"
+                title: "প্রোডাকশন লগ",
+                subtitlePrefix: "এরিয়া: ",
+                allAreas: "সব এরিয়া",
+                spoolsSuffix: " টি স্পুল",
+                itemsSuffix: " টি রেকর্ড",
+                searchPlaceholder: "EB অথবা স্পুল (SPL) দিয়ে খুঁজুন...",
+                shareBtn: "শেয়ার করুন",
+                statActiveAreaLabel: "সক্রিয় ফিল্টার",
+                statTotalItemsLabel: "মোট রেকর্ড",
+                statAllAreas: "সব এরিয়া",
+                noRecordsFound: "কোনো রেকর্ড পাওয়া যায়নি",
+                noRecordsSub: "অনুগ্রহ করে ফিল্টার পরিবর্তন করুন অথবা নতুন ডাটা যোগ করুন।",
+                bulkImportTitle: "একসাথে পেস্ট করুন",
+                bulkImportSub: "পেস্ট করার পর 'চেক করুন' বাটনে চাপ দিন",
+                bulkPlaceholder: "হোয়াটসঅ্যাপ বা চ্যাট মেসেজটি সরাসরি পেস্ট করুন...\nযেমন:\n16-05_2026\nAREA : CS. 23\n14) 290540---6\n1. 128374 ... 2",
+                detectResultTitle: "শনাক্তকরণ রেজাল্ট (স্বয়ংক্রিয়):",
+                detectArea: "এরিয়া",
+                detectDate: "তারিখ",
+                detectSpools: "স্পুল",
+                btnAnalyze: "যাচাই করুন (Analyze)",
+                btnSaveAll: "সেভ করুন (Save All)",
+                btnSaveSpoolsCount: "সেভ করুন ({count}টি স্পুল)",
+                importPreviewHeader: "ইমপোর্ট প্রিভিউ তালিকা",
+                importPreviewEmpty: "টেক্সট পেস্ট করে 'চেক করুন' বাটনে চাপ দিলে এখানে তালিকা চলে আসবে।",
+                importPreviewError: "মেসেজ থেকে কোনো ডাটা সনাক্ত করা যায়নি। অনুগ্রহ করে ডট (...) বা ড্যাশ (----) ফরম্যাটটি ব্যবহার করুন।",
+                statsOverallDistribution: "সার্বিক বণ্টন",
+                statsTotalArea: "মোট এরিয়া",
+                statsCs14Items: "CS. 14 রেকর্ড",
+                statsCs23Items: "CS. 23 রেকর্ড",
+                statsSpoolFrequency: "স্পুল ব্যবহারের হার",
+                statsNoAnalysis: "বিশ্লেষণ করার মতো ডাটা নেই।",
+                settingsCustomization: "অ্যাপ কাস্টমাইজেশন",
+                settingsAutoPad: "স্পুল আইডি প্যাডিং",
+                settingsAutoPadSub: "স্পুল নাম্বারের আগে শূন্য বসান (যেমন: ১ -> ০০১)",
+                settingsHaptic: "হ্যাপটিক ভাইব্রেশন",
+                settingsHapticSub: "বাটন টাচ করলে লাইট ফ্ল্যাশ ইফেক্ট",
+                settingsExportSection: "রপ্তানি ও ডাটাবেজ রিসেট",
+                settingsCopyCsv: "র ডাটা কপি করুন (CSV)",
+                settingsClearDb: "সম্পূর্ণ ডাটাবেজ মুছুন",
+                addModalTitle: "নতুন স্পুল এন্ট্রি যোগ করুন",
+                addModalSelectArea: "এরিয়া নির্বাচন করুন",
+                addModalEb: "EB নাম্বার",
+                addModalSpl: "স্পুল নাম্বার (SPL)",
+                addModalDate: "তারিখ",
+                addModalSave: "সেভ করুন",
+                confirmResetTitle: "ডাটাবেজ রিসেট",
+                confirmResetMsg: "আপনি কি নিশ্চিতভাবে সব ডাটা মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা সম্ভব হবে না।",
+                confirmResetCancel: "বাতিল",
+                confirmResetDelete: "মুছে ফেলুন",
+                toastNoDataToImport: "পেস্ট করার বক্সটি ফাঁকা!",
+                toastParsedSuccess: "{count} টি ডাটা সনাক্ত হয়েছে!",
+                toastSavedSuccess: "{count} টি রেকর্ড সফলভাবে সেভ হয়েছে! ✅",
+                toastNoDataToShare: "শেয়ার করার মতো কোনো ডাটা নেই!",
+                toastCopiedClipboard: "ক্লিপবোর্ডে কপি করা হয়েছে! 📋",
+                toastAllFieldsRequired: "অনুগ্রহ করে সব ঘর পূরণ করুন!",
+                toastRecordSaved: "রেকর্ড সফলভাবে সেভ হয়েছে! ✅",
+                toastCsvCopied: "ডাটাবেজ CSV ফরম্যাটে কপি করা হয়েছে!",
+                toastDbCleared: "সব ডাটা মুছে ফেলা হয়েছে! 🧹",
+                btnClear: "মুছুন",
+                btnPaste: "পেস্ট করুন",
+                localSaveTitle: "ব্রাউজার লোকাল স্টোরেজ সক্রিয়",
+                localSaveSub: "আপনার ডাটা সুরক্ষিত আছে। ব্রাউজার বা মোবাইল বন্ধ করলেও ডাটা মুছবে না!",
+                clearFilterBtn: "তারিখ ফিল্টার মুছুন",
+                foundOnOtherDates: "অন্য তারিখে {count} টি রেকর্ড পাওয়া গেছে!",
+                foundOnOtherDatesSub: "আপনার সিলেক্ট করা তারিখের বাইরে এই ডাটাগুলো রয়েছে।",
+                welcomeHeader: "আসসালামু আলাইকুম, MD ISHAQUE ALI!",
+                welcomeSub: "আপনার সব স্পুল ডাটা সুরক্ষিত আছে। আজকের কাজের জন্য প্রস্তুত তো?",
+                welcomeStartBtn: "কাজ শুরু করুন",
+                searchFilterTitle: "খুঁজুন এবং ফিল্টার করুন",
+                searchLabel: "EB অথবা স্পুল খুঁজুন",
+                dateLabel: "তারিখ ফিল্টার করুন",
+                applyFilters: "ফিল্টার প্রয়োগ করুন / খুঁজুন"
             }
         };
 
@@ -619,7 +665,12 @@
         const bulkPasteInput = document.getElementById('bulkPasteInput');
         
         // Modals & overlay elements
-        const fabAdd = document.getElementById('fabAdd');
+        const fabSearch = document.getElementById('fabSearch');
+        const searchFilterModal = document.getElementById('searchFilterModal');
+        const closeSearchModal = document.getElementById('closeSearchModal');
+        const applySearchBtn = document.getElementById('applySearchBtn');
+        const headerAddBtn = document.getElementById('headerAddBtn');
+
         const addModal = document.getElementById('addModal');
         const closeModal = document.getElementById('closeModal');
         const saveModalBtn = document.getElementById('saveModalBtn');
@@ -645,7 +696,7 @@
                 '🇺': 'U', '𝐕': 'V', '𝐖': 'W', '𝐗': 'X', '𝐘': 'Y', '𝐙': 'Z',
                 '𝐚': 'a', '𝐛': 'b', '𝐜': 'c', '𝐝': 'd', '𝐞': 'e', '𝐟': 'f', '𝐠': 'g', '𝐡': 'h', '𝐢': 'i', '𝐣': 'j',
                 '𝐤': 'k', '𝐥': 'l', '𝐦': 'm', '𝐧': 'n', '𝐨': 'o', '𝐩': 'p', '𝐪': 'q', '𝐫': 'r', '𝐬': 's', '𝐭': 't',
-                '𝐮': 'u', '𝐯': 'v', '𝐰': 'w', '𝐱': 'x', '𝐲': 'y', '𝐳': 'z'
+                '🇺': 'u', 'v': 'v', 'w': 'w', 'x': 'x', 'y': 'y', 'z': 'z'
             };
             return [...text].map(char => unicodeMap[char] || char).join('');
         }
@@ -680,11 +731,11 @@
             const btnBn = document.getElementById('lang-btn-bn');
             
             if (lang === 'en') {
-                btnEn.className = "px-2.5 py-1.5 rounded-md bg-white text-blue-900 shadow-sm transition-all";
-                btnBn.className = "px-2.5 py-1.5 rounded-md text-white/80 hover:text-white transition-all";
+                if (btnEn) btnEn.className = "px-2.5 py-1.5 rounded-md bg-white text-blue-900 shadow-sm transition-all";
+                if (btnBn) btnBn.className = "px-2.5 py-1.5 rounded-md text-white/80 hover:text-white transition-all";
             } else {
-                btnBn.className = "px-2.5 py-1.5 rounded-md bg-white text-blue-900 shadow-sm transition-all";
-                btnEn.className = "px-2.5 py-1.5 rounded-md text-white/80 hover:text-white transition-all";
+                if (btnBn) btnBn.className = "px-2.5 py-1.5 rounded-md bg-white text-blue-900 shadow-sm transition-all";
+                if (btnEn) btnEn.className = "px-2.5 py-1.5 rounded-md text-white/80 hover:text-white transition-all";
             }
 
             translateUI();
@@ -693,8 +744,9 @@
 
         function translateUI() {
             const currentTrans = translations[currentLang];
+            if (!currentTrans) return;
             
-            // Translate static DOM structures
+            // Translate static DOM structures safely
             document.querySelectorAll('[data-translate]').forEach(el => {
                 const key = el.getAttribute('data-translate');
                 if (currentTrans[key]) {
@@ -702,14 +754,26 @@
                 }
             });
 
-            // Placeholders
-            searchInput.placeholder = currentTrans.searchPlaceholder;
-            bulkPasteInput.placeholder = currentTrans.bulkPlaceholder;
+            // Handle inputs with absolute safety
+            const searchInputEl = document.getElementById('searchInput');
+            if (searchInputEl) {
+                searchInputEl.placeholder = currentTrans.searchPlaceholder;
+            }
+            const bulkPasteInputEl = document.getElementById('bulkPasteInput');
+            if (bulkPasteInputEl) {
+                bulkPasteInputEl.placeholder = currentTrans.bulkPlaceholder;
+            }
 
-            // Header labels setup
+            // Header labels setup safely
             const displayArea = selectedArea === 'ALL' ? currentTrans.statAllAreas : selectedArea;
-            document.getElementById('areaSubtitle').textContent = currentTrans.subtitlePrefix + (selectedArea === 'ALL' ? 'ALL' : selectedArea);
-            document.getElementById('statActiveArea').textContent = displayArea;
+            const areaSubtitleEl = document.getElementById('areaSubtitle');
+            if (areaSubtitleEl) {
+                areaSubtitleEl.textContent = currentTrans.subtitlePrefix + (selectedArea === 'ALL' ? 'ALL' : selectedArea);
+            }
+            const statActiveAreaEl = document.getElementById('statActiveArea');
+            if (statActiveAreaEl) {
+                statActiveAreaEl.textContent = displayArea;
+            }
 
             updateSaveButtonText();
         }
@@ -717,14 +781,18 @@
         // Dynamic load of area pills directly from current Local Storage entries
         function updateDynamicAreaPills() {
             const container = document.getElementById('areaPillsContainer');
+            if (!container) return;
             const currentTrans = translations[currentLang];
             const uniqueAreas = [...new Set(localDataStore.map(item => item.area))].sort();
             
             if (selectedArea !== 'ALL' && !uniqueAreas.includes(selectedArea)) {
                 selectedArea = 'ALL';
-                document.getElementById('areaSubtitle').textContent = currentTrans.subtitlePrefix + 'ALL';
-                document.getElementById('statActiveArea').textContent = currentTrans.statAllAreas;
-                document.getElementById('statIconArea').textContent = 'ALL';
+                const areaSubtitleEl = document.getElementById('areaSubtitle');
+                if (areaSubtitleEl) areaSubtitleEl.textContent = currentTrans.subtitlePrefix + 'ALL';
+                const statActiveAreaEl = document.getElementById('statActiveArea');
+                if (statActiveAreaEl) statActiveAreaEl.textContent = currentTrans.statAllAreas;
+                const statIconAreaEl = document.getElementById('statIconArea');
+                if (statIconAreaEl) statIconAreaEl.textContent = 'ALL';
             }
 
             let pillsHtml = `
@@ -750,24 +818,38 @@
             selectedArea = area;
             triggerHapticFeedback();
             const currentTrans = translations[currentLang];
-            document.getElementById('areaSubtitle').textContent = currentTrans.subtitlePrefix + (area === 'ALL' ? 'ALL' : area);
-            document.getElementById('statActiveArea').textContent = area === 'ALL' ? currentTrans.statAllAreas : area;
-            document.getElementById('statIconArea').textContent = area === 'ALL' ? 'ALL' : area.replace(/\s+/g, '');
+            if (currentTrans) {
+                const areaSubtitleEl = document.getElementById('areaSubtitle');
+                if (areaSubtitleEl) {
+                    areaSubtitleEl.textContent = currentTrans.subtitlePrefix + (area === 'ALL' ? 'ALL' : area);
+                }
+                const statActiveAreaEl = document.getElementById('statActiveArea');
+                if (statActiveAreaEl) {
+                    statActiveAreaEl.textContent = area === 'ALL' ? currentTrans.statAllAreas : area;
+                }
+                const statIconAreaEl = document.getElementById('statIconArea');
+                if (statIconAreaEl) {
+                    statIconAreaEl.textContent = area === 'ALL' ? 'ALL' : area.replace(/\s+/g, '');
+                }
+            }
             renderData();
         }
 
         // ONE-TAP DATE RESET FUNCTION FOR INTELLIGENT SEARCH
         function clearDateFilterAndSearch() {
             triggerHapticFeedback();
-            dateInput.value = "";
+            const dateInputEl = document.getElementById('dateInput');
+            if (dateInputEl) dateInputEl.value = "";
             renderData();
         }
 
         function renderData() {
             updateDynamicAreaPills();
 
-            const searchText = sanitizeUnicode(searchInput.value).toLowerCase().trim();
-            const selectedDate = dateInput.value;
+            const searchInputEl = document.getElementById('searchInput');
+            const dateInputEl = document.getElementById('dateInput');
+            const searchText = searchInputEl ? sanitizeUnicode(searchInputEl.value).toLowerCase().trim() : "";
+            const selectedDate = dateInputEl ? dateInputEl.value : "";
             const currentTrans = translations[currentLang];
 
             // 1. Render based on active filters
@@ -783,8 +865,10 @@
                 return matchesArea && matchesDate && matchesSearch;
             });
 
-            document.getElementById('statCount').textContent = filtered.length;
-            document.getElementById('totalCountBadge').textContent = filtered.length + currentTrans.spoolsSuffix;
+            const statCountEl = document.getElementById('statCount');
+            if (statCountEl) statCountEl.textContent = filtered.length;
+            const totalCountBadgeEl = document.getElementById('totalCountBadge');
+            if (totalCountBadgeEl) totalCountBadgeEl.textContent = filtered.length + currentTrans.spoolsSuffix;
 
             if (filtered.length === 0) {
                 // INTELLIGENT SEARCH CHECK: What if the item is present on other dates but hidden due to Date Filter?
@@ -831,29 +915,29 @@
             listView.innerHTML = filtered.map((item, idx) => {
                 const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
                 return `
-                    <div class="item-card bg-white p-3.5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center active:scale-[0.98] transition-all">
-                        <!-- Left: Serial Index (1, 2, 3...) -->
-                        <div class="flex items-center gap-3 shrink-0">
-                            <div class="w-11 h-11 bg-blue-50 text-blue-700 border border-blue-100 rounded-2xl flex items-center justify-center font-black text-base shadow-sm">
+                    <div class="item-card bg-white p-3 rounded-xl border border-gray-100 flex items-center justify-between active:scale-[0.98] transition-all gap-2">
+                        <!-- Left: Serial Index (1, 2, 3...) & EB Number with Area Badge -->
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-9 h-9 bg-blue-50 text-blue-700 border border-blue-100 rounded-xl flex items-center justify-center font-black text-sm shrink-0">
                                 ${idx + 1}
                             </div>
-                            <div>
-                                <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-lg font-bold">${item.area}</span>
-                                <p class="text-gray-800 font-black text-xl leading-tight mt-1">${item.eb}</p>
+                            <div class="min-w-0">
+                                <span class="text-[9px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold uppercase tracking-wider">${item.area}</span>
+                                <p class="text-gray-800 font-extrabold text-base leading-tight mt-0.5 truncate">${item.eb}</p>
                             </div>
                         </div>
 
-                        <!-- Middle: Highlighted Date Badge (Perfect horizontal alignment & larger readability) -->
-                        <div class="flex-grow flex justify-center px-1">
-                            <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs px-3 py-1.5 rounded-full font-black flex items-center gap-1 shadow-sm shrink-0">
-                                <svg class="w-4 h-4 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <!-- Middle: Highlighted Date Badge (Compact & elegant middle placement) -->
+                        <div class="shrink-0">
+                            <span class="bg-indigo-50 text-indigo-700 border border-indigo-150 text-[10px] px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1">
+                                <svg class="w-3 h-3 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 ${item.date}
                             </span>
                         </div>
 
-                        <!-- Right: Spool SPL badge (Oversized) -->
-                        <div class="text-right shrink-0">
-                            <span class="bg-gray-800 text-white text-xs px-3.5 py-2 rounded-xl font-black tracking-widest block shadow-sm">
+                        <!-- Right: Spool SPL badge -->
+                        <div class="shrink-0 text-right">
+                            <span class="bg-gray-800 text-white text-[10px] px-2.5 py-1 rounded-lg font-black tracking-widest block shadow-sm">
                                 SPL:${formattedSpl}
                             </span>
                         </div>
@@ -880,9 +964,12 @@
                 spoolCounts[splID] = (spoolCounts[splID] || 0) + 1;
             });
 
-            document.getElementById('totalAreaCount').textContent = uniqueAreas.size;
-            document.getElementById('totalCS14Count').textContent = countCS14;
-            document.getElementById('totalCS23Count').textContent = countCS23;
+            const totalAreaCountEl = document.getElementById('totalAreaCount');
+            if (totalAreaCountEl) totalAreaCountEl.textContent = uniqueAreas.size;
+            const totalCS14CountEl = document.getElementById('totalCS14Count');
+            if (totalCS14CountEl) totalCS14CountEl.textContent = countCS14;
+            const totalCS23CountEl = document.getElementById('totalCS23Count');
+            if (totalCS23CountEl) totalCS23CountEl.textContent = countCS23;
 
             const sortedSpools = Object.entries(spoolCounts)
                 .sort((a, b) => b[1] - a[1])
@@ -890,6 +977,7 @@
 
             const maxCount = sortedSpools[0] ? sortedSpools[0][1] : 1;
             const chartContainer = document.getElementById('frequencyChart');
+            if (!chartContainer) return;
 
             if (sortedSpools.length === 0) {
                 chartContainer.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">${currentTrans.statsNoAnalysis}</p>`;
@@ -912,10 +1000,31 @@
             }).join('');
         }
 
+        // ONE-TAP AUTO CLIPBOARD PASTE CONTROLLER
+        async function pasteFromClipboard() {
+            triggerHapticFeedback();
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text && text.trim()) {
+                    bulkPasteInput.value = text;
+                    analyzeAndDisplay(); // auto runs analysis right after paste!
+                    showToast("toastParsedSuccess");
+                } else {
+                    showToast("toastNoDataToImport");
+                }
+            } catch (err) {
+                console.error("Clipboard paste error/blocked:", err);
+                // Iframe sandbox notification fallback
+                const fallbackMsg = currentLang === 'en' ? "Box-e chepe dhore (Long press) manually paste korun!" : "বক্সে চেপে ধরে ম্যানুয়ালি পেস্ট করুন!";
+                showToast(fallbackMsg);
+            }
+        }
+
         // Import clear textbox trigger
         function clearImportBox() {
             triggerHapticFeedback();
-            bulkPasteInput.value = '';
+            const bulkPasteInputEl = document.getElementById('bulkPasteInput');
+            if (bulkPasteInputEl) bulkPasteInputEl.value = '';
             analyzedTempItems = [];
             resetImportStates();
             showToast("btnClear");
@@ -923,19 +1032,28 @@
 
         function resetImportStates() {
             const currentTrans = translations[currentLang];
-            document.getElementById('detectArea').textContent = "-";
-            document.getElementById('detectDate').textContent = "-";
-            document.getElementById('detectCount').textContent = "0";
-            document.getElementById('parsedItemsPreviewList').innerHTML = `
-                <p class="text-xs text-gray-400 text-center py-6">${currentTrans.importPreviewEmpty}</p>
-            `;
+            const detectAreaEl = document.getElementById('detectArea');
+            const detectDateEl = document.getElementById('detectDate');
+            const detectCountEl = document.getElementById('detectCount');
+            if (detectAreaEl) detectAreaEl.textContent = "-";
+            if (detectDateEl) detectDateEl.textContent = "-";
+            if (detectCountEl) detectCountEl.textContent = "0";
+
+            const previewContainer = document.getElementById('parsedItemsPreviewList');
+            if (previewContainer && currentTrans) {
+                previewContainer.innerHTML = `
+                    <p class="text-xs text-gray-400 text-center py-6">${currentTrans.importPreviewEmpty}</p>
+                `;
+            }
             updateSaveButtonText();
         }
 
         // Analyze & display classic preview flow
         function analyzeAndDisplay() {
             triggerHapticFeedback();
-            const rawText = bulkPasteInput.value;
+            const bulkPasteInputEl = document.getElementById('bulkPasteInput');
+            if (!bulkPasteInputEl) return;
+            const rawText = bulkPasteInputEl.value;
             const text = sanitizeUnicode(rawText);
             const currentTrans = translations[currentLang];
 
@@ -963,9 +1081,11 @@
                 }
             }
 
-            // Bind values in UI Detection Results Card
-            document.getElementById('detectArea').textContent = detectedArea;
-            document.getElementById('detectDate').textContent = detectedDate;
+            // Bind values in UI Detection Results Card Safely
+            const detectAreaEl = document.getElementById('detectArea');
+            const detectDateEl = document.getElementById('detectDate');
+            if (detectAreaEl) detectAreaEl.textContent = detectedArea;
+            if (detectDateEl) detectDateEl.textContent = detectedDate;
 
             // Stage 2: Spools mapper
             for (let line of lines) {
@@ -976,7 +1096,7 @@
                     continue;
                 }
 
-                let cleanLine = line.replace(/^\d+[\s.)\]）\-~]+\s*(?=\d{5,})/, '').trim();
+                let cleanLine = line.replace(/^\d+[\s.)\]\uFF09\-~]+\s*(?=\d{5,})/, '').trim();
 
                 const matchDotsDashes = cleanLine.match(/^(\d{5,})\s*(?:\.{2,}|-{2,})\s*(\d+)/);
                 if (matchDotsDashes) {
@@ -1024,13 +1144,15 @@
             }
 
             analyzedTempItems = parsedItems;
-            document.getElementById('detectCount').textContent = parsedItems.length;
+            const detectCountEl = document.getElementById('detectCount');
+            if (detectCountEl) detectCountEl.textContent = parsedItems.length;
             renderImportPreview();
         }
 
         function renderImportPreview() {
             const currentTrans = translations[currentLang];
             const previewContainer = document.getElementById('parsedItemsPreviewList');
+            if (!previewContainer) return;
             
             updateSaveButtonText();
 
@@ -1063,15 +1185,16 @@
 
         function updateSaveButtonText() {
             const currentTrans = translations[currentLang];
+            if (!currentTrans) return;
             const saveBtn = document.getElementById('saveBulkBtn');
             const btnText = document.getElementById('saveBulkBtnText');
 
             if (analyzedTempItems.length > 0) {
-                saveBtn.removeAttribute('disabled');
-                btnText.textContent = currentTrans.btnSaveSpoolsCount.replace('{count}', analyzedTempItems.length);
+                if (saveBtn) saveBtn.removeAttribute('disabled');
+                if (btnText) btnText.textContent = currentTrans.btnSaveSpoolsCount.replace('{count}', analyzedTempItems.length);
             } else {
-                saveBtn.setAttribute('disabled', 'true');
-                btnText.textContent = currentTrans.btnSaveAll;
+                if (saveBtn) saveBtn.setAttribute('disabled', 'true');
+                if (btnText) btnText.textContent = currentTrans.btnSaveAll;
             }
         }
 
@@ -1094,14 +1217,16 @@
             const savedCount = analyzedTempItems.length;
             const currentTrans = translations[currentLang];
 
-            // Reset input box
-            bulkPasteInput.value = '';
+            // Reset input box safely
+            const bulkPasteInputEl = document.getElementById('bulkPasteInput');
+            if (bulkPasteInputEl) bulkPasteInputEl.value = '';
             analyzedTempItems = [];
             resetImportStates();
 
             // Auto-align filter settings on the Home Tab so newly imported spools are visible instantly
-            if (importedDate) {
-                dateInput.value = importedDate;
+            const dateInputEl = document.getElementById('dateInput');
+            if (importedDate && dateInputEl) {
+                dateInputEl.value = importedDate;
             }
             if (importedArea) {
                 selectedArea = importedArea;
@@ -1116,7 +1241,7 @@
             switchTab('home');
         }
 
-        // DYNAMIC TIME-OF-DAY GREETINGS ENGINE & WELCOME MODAL
+        // DYNAMIC TIME-OF-DAY GREETINGS ENGINE & WELCOME MODAL (Strictly Guarded)
         function triggerWelcomePopup() {
             const welcomeModal = document.getElementById('welcomeModal');
             const welcomeTotalCount = document.getElementById('welcomeTotalCount');
@@ -1124,13 +1249,17 @@
             const welcomeTimeGreeting = document.getElementById('welcomeTimeGreeting');
             const currentTrans = translations[currentLang];
 
-            // Database count injection
-            welcomeTotalCount.textContent = localDataStore.length + " " + (currentLang === 'en' ? 'SPOOLS' : 'Spool');
+            // Database count injection safely
+            if (welcomeTotalCount) {
+                welcomeTotalCount.textContent = localDataStore.length + " " + (currentLang === 'en' ? 'SPOOLS' : 'Spool');
+            }
 
             // Format dynamic date block
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const today = new Date();
-            welcomeDate.textContent = today.toLocaleDateString(currentLang === 'en' ? 'en-US' : 'bn-BD', options);
+            if (welcomeDate) {
+                welcomeDate.textContent = today.toLocaleDateString(currentLang === 'en' ? 'en-US' : 'bn-BD', options);
+            }
 
             // Dynamic Time of Day Greeting logic
             const hour = today.getHours();
@@ -1149,134 +1278,183 @@
                     timeGreetingText = "🌙 Good Night!";
                 }
             } else {
-                // Bangla Latin / Banglish greetings
+                // Bangla Script greetings
                 if (hour >= 5 && hour < 12) {
-                    timeGreetingText = "☀️ Shuvo Sokal!";
+                    timeGreetingText = "☀️ শুভ সকাল!";
                 } else if (hour >= 12 && hour < 16) {
-                    timeGreetingText = "☀️ Shuvo Dupur!";
+                    timeGreetingText = "☀️ শুভ দুপুর!";
                 } else if (hour >= 16 && hour < 18) {
-                    timeGreetingText = "⛅ Shuvo Bikal!";
+                    timeGreetingText = "⛅ শুভ বিকাল!";
                 } else if (hour >= 18 && hour < 23) {
-                    timeGreetingText = "🌙 Shuvo Shondha!";
+                    timeGreetingText = "🌙 শুভ সন্ধ্যা!";
                 } else {
-                    timeGreetingText = "🌙 Shuvo Ratri!";
+                    timeGreetingText = "🌙 শুভ রাত্রি!";
                 }
             }
 
-            welcomeTimeGreeting.textContent = timeGreetingText;
+            if (welcomeTimeGreeting) {
+                welcomeTimeGreeting.textContent = timeGreetingText;
+            }
 
-            // Pop active overlay
-            welcomeModal.classList.remove('hidden');
+            // Pop active overlay safely
+            if (welcomeModal) {
+                welcomeModal.classList.remove('hidden');
+            }
         }
 
         // Close Welcome Popup Listener
         document.getElementById('closeWelcomeBtn').addEventListener('click', () => {
             triggerHapticFeedback();
-            document.getElementById('welcomeModal').classList.add('hidden');
+            const welcomeModal = document.getElementById('welcomeModal');
+            if (welcomeModal) welcomeModal.classList.add('hidden');
         });
 
         function switchTab(tabName) {
             triggerHapticFeedback();
             
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(`${tabName}Tab`).classList.add('active');
+            const targetTab = document.getElementById(`${tabName}Tab`);
+            if (targetTab) targetTab.classList.add('active');
 
             const tabs = ['home', 'import', 'stats', 'settings'];
             tabs.forEach(tab => {
                 const btn = document.getElementById(`tab-btn-${tab}`);
-                if (tab === tabName) {
-                    btn.className = "flex flex-col items-center justify-center active-tab active-press";
-                } else {
-                    btn.className = "flex flex-col items-center justify-center text-gray-400 active-press";
+                if (btn) {
+                    if (tab === tabName) {
+                        btn.className = "flex flex-col items-center justify-center active-tab active-press";
+                    } else {
+                        btn.className = "flex flex-col items-center justify-center text-gray-400 active-press";
+                    }
                 }
             });
         }
 
+        // Search trigger pop-up events (FAB SEARCH FLOW)
+        if (fabSearch) {
+            fabSearch.addEventListener('click', () => {
+                triggerHapticFeedback();
+                if (searchFilterModal) searchFilterModal.classList.remove('hidden');
+            });
+        }
+
+        if (closeSearchModal) {
+            closeSearchModal.addEventListener('click', () => {
+                if (searchFilterModal) searchFilterModal.classList.add('hidden');
+            });
+        }
+
+        if (applySearchBtn) {
+            applySearchBtn.addEventListener('click', () => {
+                triggerHapticFeedback();
+                if (searchFilterModal) searchFilterModal.classList.add('hidden');
+                renderData();
+            });
+        }
+
+        // Top compact add button setup
+        if (headerAddBtn) {
+            headerAddBtn.addEventListener('click', () => {
+                triggerHapticFeedback();
+                if (addModal) addModal.classList.remove('hidden');
+            });
+        }
+
         // Key bindings and listeners (AUTO-SANITIZATION ON SEARCH INPUT)
-        searchInput.addEventListener('input', (e) => {
-            const sanitized = sanitizeUnicode(e.target.value);
-            if (e.target.value !== sanitized) {
-                e.target.value = sanitized; // User types/pastes bold -> instantly becomes standard
-            }
-            renderData();
-        });
-
-        dateInput.addEventListener('change', renderData);
-        clearDate.addEventListener('click', () => {
-            triggerHapticFeedback();
-            dateInput.value = "";
-            renderData();
-        });
-
-        settingPad.addEventListener('change', renderData);
-
-        document.getElementById('shareData').addEventListener('click', () => {
-            triggerHapticFeedback();
-            const currentTrans = translations[currentLang];
-            const filtered = localDataStore.filter(item => {
-                const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
-                const matchesDate = (!dateInput.value || item.date === dateInput.value);
-                return matchesArea && matchesDate;
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const sanitized = sanitizeUnicode(e.target.value);
+                if (e.target.value !== sanitized) {
+                    e.target.value = sanitized; // User types/pastes bold -> instantly becomes standard
+                }
+                renderData();
             });
+        }
 
-            if (filtered.length === 0) {
-                showToast("toastNoDataToShare");
-                return;
-            }
-
-            let textContent = `*PRODUCTION LOG REPORT*\nDate: ${dateInput.value || 'All Dates'}\nArea: ${selectedArea}\nTotal: ${filtered.length} entries\n\n`;
-            filtered.forEach((item, index) => {
-                const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
-                textContent += `${index + 1}. EB: ${item.eb} | SPL: ${formattedSpl} (${item.area})\n`;
+        if (dateInput) {
+            dateInput.addEventListener('change', renderData);
+        }
+        if (clearDate) {
+            clearDate.addEventListener('click', () => {
+                triggerHapticFeedback();
+                if (dateInput) dateInput.value = "";
+                renderData();
             });
+        }
 
-            const el = document.createElement('textarea');
-            el.value = textContent;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
+        if (settingPad) {
+            settingPad.addEventListener('change', renderData);
+        }
 
-            showToast("toastCopiedClipboard");
-        });
+        const shareDataEl = document.getElementById('shareData');
+        if (shareDataEl) {
+            shareDataEl.addEventListener('click', () => {
+                triggerHapticFeedback();
+                const currentTrans = translations[currentLang];
+                const selectedDateVal = dateInput ? dateInput.value : "";
+                const filtered = localDataStore.filter(item => {
+                    const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
+                    const matchesDate = (!selectedDateVal || item.date === selectedDateVal);
+                    return matchesArea && matchesDate;
+                });
 
-        fabAdd.addEventListener('click', () => {
-            triggerHapticFeedback();
-            addModal.classList.remove('hidden');
-        });
+                if (filtered.length === 0) {
+                    showToast("toastNoDataToShare");
+                    return;
+                }
 
-        closeModal.addEventListener('click', () => {
-            addModal.classList.add('hidden');
-        });
+                let textContent = `*PRODUCTION LOG REPORT*\nDate: ${selectedDateVal || 'All Dates'}\nArea: ${selectedArea}\nTotal: ${filtered.length} entries\n\n`;
+                filtered.forEach((item, index) => {
+                    const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                    textContent += `${index + 1}. EB: ${item.eb} | SPL: ${formattedSpl} (${item.area})\n`;
+                });
 
-        saveModalBtn.addEventListener('click', () => {
-            triggerHapticFeedback();
-            const area = document.getElementById('modalArea').value;
-            const eb = document.getElementById('modalEB').value.trim();
-            const spl = document.getElementById('modalSPL').value.trim();
-            const date = document.getElementById('modalDate').value;
+                const el = document.createElement('textarea');
+                el.value = textContent;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
 
-            if (!eb || !spl || !date) {
-                showToast("toastAllFieldsRequired");
-                return;
-            }
+                showToast("toastCopiedClipboard");
+            });
+        }
 
-            const newRecord = { date, area, eb, spl };
-            localDataStore.unshift(newRecord);
-            
-            // Save newly added manual item to Local Storage
-            try {
-                localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
-            } catch (e) {
-                console.error("Local storage manual write error:", e);
-            }
-            
-            document.getElementById('modalEB').value = '';
-            document.getElementById('modalSPL').value = '';
-            addModal.classList.add('hidden');
-            showToast("toastRecordSaved");
-            renderData();
-        });
+        if (closeModal) {
+            closeModal.addEventListener('click', () => {
+                if (addModal) addModal.classList.add('hidden');
+            });
+        }
+
+        if (saveModalBtn) {
+            saveModalBtn.addEventListener('click', () => {
+                triggerHapticFeedback();
+                const area = document.getElementById('modalArea').value;
+                const eb = document.getElementById('modalEB').value.trim();
+                const spl = document.getElementById('modalSPL').value.trim();
+                const date = document.getElementById('modalDate').value;
+
+                if (!eb || !spl || !date) {
+                    showToast("toastAllFieldsRequired");
+                    return;
+                }
+
+                const newRecord = { date, area, eb, spl };
+                localDataStore.unshift(newRecord);
+                
+                // Save newly added manual item to Local Storage
+                try {
+                    localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
+                } catch (e) {
+                    console.error("Local storage manual write error:", e);
+                }
+                
+                document.getElementById('modalEB').value = '';
+                document.getElementById('modalSPL').value = '';
+                if (addModal) addModal.classList.add('hidden');
+                showToast("toastRecordSaved");
+                renderData();
+            });
+        }
 
         function exportCSV() {
             triggerHapticFeedback();
@@ -1298,24 +1476,35 @@
         // Dynamic confirmed modals for DB reset
         function clearFullDatabase() {
             triggerHapticFeedback();
-            document.getElementById('confirmResetModal').classList.remove('hidden');
+            const confirmResetModalEl = document.getElementById('confirmResetModal');
+            if (confirmResetModalEl) confirmResetModalEl.classList.remove('hidden');
         }
 
-        document.getElementById('cancelResetBtn').addEventListener('click', () => {
-            document.getElementById('confirmResetModal').classList.add('hidden');
-        });
+        const cancelResetBtnEl = document.getElementById('cancelResetBtn');
+        if (cancelResetBtnEl) {
+            cancelResetBtnEl.addEventListener('click', () => {
+                const confirmResetModalEl = document.getElementById('confirmResetModal');
+                if (confirmResetModalEl) confirmResetModalEl.classList.add('hidden');
+            });
+        }
 
-        document.getElementById('confirmResetModal').addEventListener('click', () => {
-            localDataStore = [];
-            try {
-                localStorage.setItem('spool_pro_database', JSON.stringify([]));
-            } catch (e) {
-                console.error("Local storage database reset write error:", e);
-            }
-            document.getElementById('confirmResetModal').classList.add('hidden');
-            showToast("toastDbCleared");
-            renderData();
-        });
+        const confirmResetBtnEl = document.getElementById('confirmResetModal');
+        if (confirmResetBtnEl) {
+            confirmResetBtnEl.addEventListener('click', (e) => {
+                if (e.target && e.target.id === 'confirmResetBtn') {
+                    localDataStore = [];
+                    try {
+                        localStorage.setItem('spool_pro_database', JSON.stringify([]));
+                    } catch (ex) {
+                        console.error("Local storage database reset write error:", ex);
+                    }
+                    const confirmResetModalEl = document.getElementById('confirmResetModal');
+                    if (confirmResetModalEl) confirmResetModalEl.classList.add('hidden');
+                    showToast("toastDbCleared");
+                    renderData();
+                }
+            });
+        }
 
         // Initialize Lang & state configurations on window load
         window.onload = function() {
