@@ -213,7 +213,7 @@
                                 <span class="block text-[9px] text-gray-400 uppercase font-black tracking-wide" data-translate="detectDate">Date</span>
                                 <span id="detectDate" class="text-indigo-600 text-sm font-black truncate block mt-0.5">-</span>
                             </div>
-                            <div class="bg-white p-2 rounded-xl border border-gray-100 text-center shadow-sm">
+                            <div class="bg-white p-2 rounded-xl border border-gray-150 text-center shadow-sm">
                                 <span class="block text-[9px] text-gray-400 uppercase font-black tracking-wide" data-translate="detectSpools">Spools</span>
                                 <span id="detectCount" class="text-emerald-600 text-sm font-black block mt-0.5">0</span>
                             </div>
@@ -222,10 +222,10 @@
 
                     <!-- Split Buttons Flow (Analyze & Save) - Compact Styles Fix -->
                     <div class="flex gap-2.5">
-                        <button onclick="analyzeAndDisplay()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-extrabold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all active-press" data-translate="btnAnalyze">
+                        <button onclick="analyzeAndDisplay()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-extrabold py-3 rounded-2xl text-xs uppercase tracking-wider transition-all active-press" data-translate="btnAnalyze">
                             Analyze
                         </button>
-                        <button onclick="saveBulkData()" id="saveBulkBtn" disabled class="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-extrabold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all active-press flex items-center justify-center gap-2">
+                        <button onclick="saveBulkData()" id="saveBulkBtn" disabled class="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-extrabold py-3 rounded-xl text-xs uppercase tracking-wider transition-all active-press flex items-center justify-center gap-2">
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                             <span id="saveBulkBtnText" data-translate="btnSaveAll">Save All</span>
                         </button>
@@ -482,7 +482,7 @@
                 <span class="text-xs mt-1 font-black">STATS</span>
             </button>
             <button onclick="switchTab('settings')" id="tab-btn-settings" class="flex flex-col items-center justify-center text-gray-400 active-press">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31(2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756-.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31a2.37 2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 <span class="text-[9px] mt-1 font-bold">CONFIG</span>
             </button>
         </nav>
@@ -579,7 +579,11 @@
                 searchFilterTitle: "Search & Filter",
                 searchLabel: "Search EB or Spool",
                 dateLabel: "Filter by Date",
-                applyFilters: "Apply Filter / খুজুন"
+                applyFilters: "Apply Filter / খুজুন",
+                duplicateBadge: "Saved Already",
+                duplicateInternalBadge: "Double in paste text",
+                toastDuplicatesSkipped: "{count} duplicates skipped!",
+                toastNoNewSpools: "No new spools to save!"
             },
             bn: {
                 title: "প্রোডাকশন লগ",
@@ -653,7 +657,11 @@
                 searchFilterTitle: "খুঁজুন এবং ফিল্টার করুন",
                 searchLabel: "EB অথবা স্পুল খুঁজুন",
                 dateLabel: "তারিখ ফিল্টার করুন",
-                applyFilters: "ফিল্টার প্রয়োগ করুন / খুঁজুন"
+                applyFilters: "ফিল্টার প্রয়োগ করুন / খুঁজুন",
+                duplicateBadge: "আগে থেকে আছে",
+                duplicateInternalBadge: "বক্সে ডাবল আছে",
+                toastDuplicatesSkipped: "{count} টি ডুপ্লিকেট বাদ দেওয়া হয়েছে!",
+                toastNoNewSpools: "সেভ করার মতো নতুন কোনো স্পুল নেই!"
             }
         };
 
@@ -685,6 +693,11 @@
         function sanitizeUnicode(text) {
             const unicodeMap = {
                 '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+                '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+                '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+                '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+                '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
+                '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9',
                 '𝟎': '0', '𝟏': '1', '𝟐': '2', '𝟑': '3', '𝟒': '4', '𝟓': '5', '𝟔': '6', '𝟕': '7', '𝟖': '8', '𝟗': '9',
                 '𝟘': '0', '𝟙': '1', '𝟚': '2', '𝟛': '3', '𝟜': '4', '𝟝': '5', '𝟞': '6', '𝟟': '7', '𝟠': '8', '𝟡': '9',
                 '𝟢': '0', '𝟣': '1', '𝟤': '2', '𝟥': '3', '𝟦': '4', '𝟧': '5', '𝟨': '6', '𝟩': '7', '𝟪': '8', '𝟫': '9',
@@ -695,14 +708,14 @@
                 '𝐊': 'K', '𝐋': 'L', '𝐌': 'M', '𝐍': 'N', '𝐎': 'O', '𝐏': 'P', '𝐐': 'Q', '𝐑': 'R', '𝐒': 'S', '𝐓': 'T',
                 '🇺': 'U', '𝐕': 'V', '𝐖': 'W', '𝐗': 'X', '𝐘': 'Y', '𝐙': 'Z',
                 '𝐚': 'a', '𝐛': 'b', '𝐜': 'c', '𝐝': 'd', '𝐞': 'e', '𝐟': 'f', '𝐠': 'g', '𝐡': 'h', '𝐢': 'i', '𝐣': 'j',
-                '𝐤': 'k', '𝐥': 'l', '𝐦': 'm', '𝐧': 'n', '𝐨': 'o', '𝐩': 'p', '𝐪': 'q', '𝐫': 'r', '𝐬': 's', '𝐭': 't',
+                '𝐤': 'k', '𝐥': 'l', '𝐦': 'm', '<b>': 'b', '</b>': 'b', '𝐧': 'n', '𝐨': 'o', '𝐩': 'p', '𝐪': 'q', '𝐫': 'r', 'ｓ': 's', 'ｔ': 't',
                 '🇺': 'u', 'v': 'v', 'w': 'w', 'x': 'x', 'y': 'y', 'z': 'z'
             };
             return [...text].map(char => unicodeMap[char] || char).join('');
         }
 
         function triggerHapticFeedback() {
-            if (settingHaptic.checked) {
+            if (settingHaptic && settingHaptic.checked) {
                 document.body.classList.add('brightness-95');
                 setTimeout(() => document.body.classList.remove('brightness-95'), 80);
             }
@@ -857,7 +870,7 @@
                 const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
                 const matchesDate = (!selectedDate || item.date === selectedDate);
                 
-                const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                const formattedSpl = (settingPad && settingPad.checked) ? String(item.spl).padStart(3, '0') : item.spl;
                 const matchesSearch = !searchText || 
                     item.eb.toLowerCase().includes(searchText) || 
                     formattedSpl.toLowerCase().includes(searchText);
@@ -876,7 +889,7 @@
                 if (selectedDate && searchText) {
                     globalFiltered = localDataStore.filter(item => {
                         const matchesArea = (selectedArea === 'ALL' || item.area === selectedArea);
-                        const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                        const formattedSpl = (settingPad && settingPad.checked) ? String(item.spl).padStart(3, '0') : item.spl;
                         return matchesArea && (
                             item.eb.toLowerCase().includes(searchText) || 
                             formattedSpl.toLowerCase().includes(searchText)
@@ -913,7 +926,7 @@
             }
 
             listView.innerHTML = filtered.map((item, idx) => {
-                const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                const formattedSpl = (settingPad && settingPad.checked) ? String(item.spl).padStart(3, '0') : item.spl;
                 return `
                     <div class="item-card bg-white p-3 rounded-xl border border-gray-100 flex items-center justify-between active:scale-[0.98] transition-all gap-2">
                         <!-- Left: Serial Index (1, 2, 3...) & EB Number with Area Badge -->
@@ -960,7 +973,7 @@
                 if (item.area === 'CS. 14') countCS14++;
                 if (item.area === 'CS. 23') countCS23++;
                 
-                const splID = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                const splID = (settingPad && settingPad.checked) ? String(item.spl).padStart(3, '0') : item.spl;
                 spoolCounts[splID] = (spoolCounts[splID] || 0) + 1;
             });
 
@@ -1030,6 +1043,72 @@
             showToast("btnClear");
         }
 
+        // DYNAMIC TIME-OF-DAY GREETINGS ENGINE & WELCOME MODAL (Strictly Guarded)
+        function triggerWelcomePopup() {
+            const welcomeModal = document.getElementById('welcomeModal');
+            const welcomeTotalCount = document.getElementById('welcomeTotalCount');
+            const welcomeDate = document.getElementById('welcomeDate');
+            const welcomeTimeGreeting = document.getElementById('welcomeTimeGreeting');
+            const currentTrans = translations[currentLang];
+
+            // Database count injection safely
+            if (welcomeTotalCount) {
+                welcomeTotalCount.textContent = localDataStore.length + " " + (currentLang === 'en' ? 'SPOOLS' : 'Spool');
+            }
+
+            // Format dynamic date block (Wrapped securely in try-catch to avoid localizations engine crash!)
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date();
+            if (welcomeDate) {
+                try {
+                    welcomeDate.textContent = today.toLocaleDateString(currentLang === 'en' ? 'en-US' : 'bn-BD', options);
+                } catch (e) {
+                    console.warn("Date localization failed, using safe fallback standard date:", e);
+                    welcomeDate.textContent = today.toDateString(); // Safe standard backup string
+                }
+            }
+
+            // Dynamic Time of Day Greeting logic
+            const hour = today.getHours();
+            let timeGreetingText = "";
+
+            if (currentLang === 'en') {
+                if (hour >= 5 && hour < 12) {
+                    timeGreetingText = "☀️ Good Morning!";
+                } else if (hour >= 12 && hour < 16) {
+                    timeGreetingText = "☀️ Good Afternoon!";
+                } else if (hour >= 16 && hour < 18) {
+                    timeGreetingText = "⛅ Good Afternoon!";
+                } else if (hour >= 18 && hour < 23) {
+                    timeGreetingText = "🌙 Good Evening!";
+                } else {
+                    timeGreetingText = "🌙 Good Night!";
+                }
+            } else {
+                // Bangla Script greetings
+                if (hour >= 5 && hour < 12) {
+                    timeGreetingText = "☀️ শুভ সকাল!";
+                } else if (hour >= 12 && hour < 16) {
+                    timeGreetingText = "☀️ শুভ দুপুর!";
+                } else if (hour >= 16 && hour < 18) {
+                    timeGreetingText = "⛅ শুভ বিকাল!";
+                } else if (hour >= 18 && hour < 23) {
+                    timeGreetingText = "🌙 শুভ সন্ধ্যা!";
+                } else {
+                    timeGreetingText = "🌙 শুভ রাত্রি!";
+                }
+            }
+
+            if (welcomeTimeGreeting) {
+                welcomeTimeGreeting.textContent = timeGreetingText;
+            }
+
+            // Pop active overlay safely
+            if (welcomeModal) {
+                welcomeModal.classList.remove('hidden');
+            }
+        }
+
         function resetImportStates() {
             const currentTrans = translations[currentLang];
             const detectAreaEl = document.getElementById('detectArea');
@@ -1048,7 +1127,7 @@
             updateSaveButtonText();
         }
 
-        // Analyze & display classic preview flow
+        // Analyze & display classic preview flow with DUPLICATE DETECTOR
         function analyzeAndDisplay() {
             triggerHapticFeedback();
             const bulkPasteInputEl = document.getElementById('bulkPasteInput');
@@ -1075,7 +1154,7 @@
                 if (dateMatch) {
                     detectedDate = `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`;
                 }
-                const areaMatch = line.match(/(?:AREA|𝐀𝐑𝐄𝐀)\s*:\s*(CS\.\s*\d+)/i);
+                const areaMatch = line.match(/(?:AREA|區域|區域|區域|𝐀𝐑𝐄𝐀)\s*:\s*(CS\.\s*\d+)/i);
                 if (areaMatch) {
                     detectedArea = areaMatch[1].toUpperCase();
                 }
@@ -1143,9 +1222,43 @@
                 }
             }
 
-            analyzedTempItems = parsedItems;
+            // DUPLICATE DETECTOR LOGIC (Check localDataStore + inside pasted text)
+            const seenInPaste = new Set();
+            analyzedTempItems = parsedItems.map(item => {
+                const key = `${item.eb}-${item.spl}-${item.area}-${item.date}`;
+                
+                // Existing DB Check
+                const existsInDb = localDataStore.some(dbItem => 
+                    dbItem.eb === item.eb && 
+                    dbItem.spl === item.spl && 
+                    dbItem.area === item.area && 
+                    dbItem.date === item.date
+                );
+
+                let isDuplicate = false;
+                let duplicateType = '';
+
+                if (existsInDb) {
+                    isDuplicate = true;
+                    duplicateType = 'database'; // Saved previously
+                } else if (seenInPaste.has(key)) {
+                    isDuplicate = true;
+                    duplicateType = 'internal'; // Duplicate within pasted block
+                } else {
+                    seenInPaste.add(key);
+                }
+
+                return {
+                    ...item,
+                    isDuplicate,
+                    duplicateType
+                };
+            });
+
+            const uniqueCount = analyzedTempItems.filter(item => !item.isDuplicate).length;
             const detectCountEl = document.getElementById('detectCount');
-            if (detectCountEl) detectCountEl.textContent = parsedItems.length;
+            if (detectCountEl) detectCountEl.textContent = uniqueCount; // Show unique count to user
+            
             renderImportPreview();
         }
 
@@ -1158,14 +1271,25 @@
 
             if (analyzedTempItems.length > 0) {
                 previewContainer.innerHTML = analyzedTempItems.map((item, idx) => {
-                    const formatSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                    const formatSpl = (settingPad && settingPad.checked) ? String(item.spl).padStart(3, '0') : item.spl;
+                    
+                    // Style differently if duplicate detected
+                    let duplicateBadgeHtml = '';
+                    let cardStyle = 'bg-gray-50 border-gray-100';
+                    if (item.isDuplicate) {
+                        cardStyle = 'bg-red-50/70 border-red-200';
+                        const badgeText = item.duplicateType === 'database' ? currentTrans.duplicateBadge : currentTrans.duplicateInternalBadge;
+                        duplicateBadgeHtml = `<span class="text-[9px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">${badgeText}</span>`;
+                    }
+
                     return `
-                        <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-100 flex justify-between items-center text-sm shadow-sm">
-                            <div class="flex items-center gap-2.5">
+                        <div class="p-3.5 rounded-xl border flex justify-between items-center text-sm shadow-sm ${cardStyle}">
+                            <div class="flex items-center gap-2.5 min-w-0">
                                 <span class="text-gray-400 font-extrabold text-[12px] min-w-[20px]">${idx + 1}.</span>
-                                <span class="font-bold text-gray-500">EB: <span class="text-gray-800 font-black text-base">${item.eb}</span></span>
+                                <span class="font-bold text-gray-500 truncate">EB: <span class="text-gray-800 font-black text-base">${item.eb}</span></span>
+                                ${duplicateBadgeHtml}
                             </div>
-                            <div class="flex items-center gap-1.5 bg-white border border-gray-150 px-3 py-1.5 rounded-xl">
+                            <div class="flex items-center gap-1.5 bg-white border border-gray-150 px-3 py-1.5 rounded-xl shrink-0">
                                 <span class="text-[10px] text-gray-400 font-black uppercase">SPL:</span>
                                 <span class="text-blue-600 font-black text-sm">${formatSpl}</span>
                             </div>
@@ -1173,7 +1297,13 @@
                     `;
                 }).join('');
                 
-                const parsedMsg = currentTrans.toastParsedSuccess.replace('{count}', analyzedTempItems.length);
+                const uniqueCount = analyzedTempItems.filter(item => !item.isDuplicate).length;
+                const duplicateCount = analyzedTempItems.filter(item => item.isDuplicate).length;
+                
+                let parsedMsg = currentTrans.toastParsedSuccess.replace('{count}', uniqueCount);
+                if (duplicateCount > 0) {
+                    parsedMsg += ` (${duplicateCount} double skipped)`;
+                }
                 showToast(parsedMsg);
             } else {
                 previewContainer.innerHTML = `
@@ -1189,9 +1319,16 @@
             const saveBtn = document.getElementById('saveBulkBtn');
             const btnText = document.getElementById('saveBulkBtnText');
 
-            if (analyzedTempItems.length > 0) {
+            const uniqueNewItems = analyzedTempItems.filter(item => !item.isDuplicate);
+            const dupItemsCount = analyzedTempItems.filter(item => item.isDuplicate).length;
+
+            if (uniqueNewItems.length > 0) {
                 if (saveBtn) saveBtn.removeAttribute('disabled');
-                if (btnText) btnText.textContent = currentTrans.btnSaveSpoolsCount.replace('{count}', analyzedTempItems.length);
+                let label = currentTrans.btnSaveSpoolsCount.replace('{count}', uniqueNewItems.length);
+                if (dupItemsCount > 0) {
+                    label += ` (${dupItemsCount} skipped)`;
+                }
+                if (btnText) btnText.textContent = label;
             } else {
                 if (saveBtn) saveBtn.setAttribute('disabled', 'true');
                 if (btnText) btnText.textContent = currentTrans.btnSaveAll;
@@ -1200,21 +1337,28 @@
 
         function saveBulkData() {
             triggerHapticFeedback();
-            if (analyzedTempItems.length === 0) return;
+            
+            // Only keep non-duplicate ones to save!
+            const newItemsToSave = analyzedTempItems.filter(item => !item.isDuplicate);
+            const skippedCount = analyzedTempItems.filter(item => item.isDuplicate).length;
+
+            if (newItemsToSave.length === 0) {
+                showToast("toastNoNewSpools");
+                return;
+            }
 
             // Save first item's context for automatic home filter alignment (Prevents saved items getting filtered out)
-            const importedDate = analyzedTempItems[0].date;
-            const importedArea = analyzedTempItems[0].area;
+            const importedDate = newItemsToSave[0].date;
+            const importedArea = newItemsToSave[0].area;
 
-            // Merge entries and write strictly to local storage
-            localDataStore = [...analyzedTempItems, ...localDataStore];
+            // Merge unique entries and write strictly to local storage
+            localDataStore = [...newItemsToSave, ...localDataStore];
             try {
                 localStorage.setItem('spool_pro_database', JSON.stringify(localDataStore));
             } catch (e) {
                 console.error("Local storage save failed. Failback strictly in-memory.", e);
             }
 
-            const savedCount = analyzedTempItems.length;
             const currentTrans = translations[currentLang];
 
             // Reset input box safely
@@ -1234,80 +1378,16 @@
                 selectedArea = 'ALL';
             }
 
-            const saveMsg = currentTrans.toastSavedSuccess.replace('{count}', savedCount);
+            let saveMsg = currentTrans.toastSavedSuccess.replace('{count}', newItemsToSave.length);
+            if (skippedCount > 0) {
+                const skippedMsg = currentTrans.toastDuplicatesSkipped.replace('{count}', skippedCount);
+                saveMsg += ` (${skippedMsg})`;
+            }
             showToast(saveMsg);
             
             renderData();
             switchTab('home');
         }
-
-        // DYNAMIC TIME-OF-DAY GREETINGS ENGINE & WELCOME MODAL (Strictly Guarded)
-        function triggerWelcomePopup() {
-            const welcomeModal = document.getElementById('welcomeModal');
-            const welcomeTotalCount = document.getElementById('welcomeTotalCount');
-            const welcomeDate = document.getElementById('welcomeDate');
-            const welcomeTimeGreeting = document.getElementById('welcomeTimeGreeting');
-            const currentTrans = translations[currentLang];
-
-            // Database count injection safely
-            if (welcomeTotalCount) {
-                welcomeTotalCount.textContent = localDataStore.length + " " + (currentLang === 'en' ? 'SPOOLS' : 'Spool');
-            }
-
-            // Format dynamic date block
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const today = new Date();
-            if (welcomeDate) {
-                welcomeDate.textContent = today.toLocaleDateString(currentLang === 'en' ? 'en-US' : 'bn-BD', options);
-            }
-
-            // Dynamic Time of Day Greeting logic
-            const hour = today.getHours();
-            let timeGreetingText = "";
-
-            if (currentLang === 'en') {
-                if (hour >= 5 && hour < 12) {
-                    timeGreetingText = "☀️ Good Morning!";
-                } else if (hour >= 12 && hour < 16) {
-                    timeGreetingText = "☀️ Good Afternoon!";
-                } else if (hour >= 16 && hour < 18) {
-                    timeGreetingText = "⛅ Good Afternoon!";
-                } else if (hour >= 18 && hour < 23) {
-                    timeGreetingText = "🌙 Good Evening!";
-                } else {
-                    timeGreetingText = "🌙 Good Night!";
-                }
-            } else {
-                // Bangla Script greetings
-                if (hour >= 5 && hour < 12) {
-                    timeGreetingText = "☀️ শুভ সকাল!";
-                } else if (hour >= 12 && hour < 16) {
-                    timeGreetingText = "☀️ শুভ দুপুর!";
-                } else if (hour >= 16 && hour < 18) {
-                    timeGreetingText = "⛅ শুভ বিকাল!";
-                } else if (hour >= 18 && hour < 23) {
-                    timeGreetingText = "🌙 শুভ সন্ধ্যা!";
-                } else {
-                    timeGreetingText = "🌙 শুভ রাত্রি!";
-                }
-            }
-
-            if (welcomeTimeGreeting) {
-                welcomeTimeGreeting.textContent = timeGreetingText;
-            }
-
-            // Pop active overlay safely
-            if (welcomeModal) {
-                welcomeModal.classList.remove('hidden');
-            }
-        }
-
-        // Close Welcome Popup Listener
-        document.getElementById('closeWelcomeBtn').addEventListener('click', () => {
-            triggerHapticFeedback();
-            const welcomeModal = document.getElementById('welcomeModal');
-            if (welcomeModal) welcomeModal.classList.add('hidden');
-        });
 
         function switchTab(tabName) {
             triggerHapticFeedback();
@@ -1404,7 +1484,7 @@
 
                 let textContent = `*PRODUCTION LOG REPORT*\nDate: ${selectedDateVal || 'All Dates'}\nArea: ${selectedArea}\nTotal: ${filtered.length} entries\n\n`;
                 filtered.forEach((item, index) => {
-                    const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
+                    const formattedSpl = (settingPad && settingPad.checked) ? String(item.spl).padStart(3, '0') : item.spl;
                     textContent += `${index + 1}. EB: ${item.eb} | SPL: ${formattedSpl} (${item.area})\n`;
                 });
 
@@ -1416,6 +1496,15 @@
                 document.body.removeChild(el);
 
                 showToast("toastCopiedClipboard");
+            });
+        }
+
+        const closeWelcomeBtnEl = document.getElementById('closeWelcomeBtn');
+        if (closeWelcomeBtnEl) {
+            closeWelcomeBtnEl.addEventListener('click', () => {
+                triggerHapticFeedback();
+                const welcomeModal = document.getElementById('welcomeModal');
+                if (welcomeModal) welcomeModal.classList.add('hidden');
             });
         }
 
@@ -1456,36 +1545,19 @@
             });
         }
 
-        function exportCSV() {
-            triggerHapticFeedback();
-            let csv = "Date,Area,EB Number,Spool ID\n";
-            localDataStore.forEach(item => {
-                const formattedSpl = settingPad.checked ? String(item.spl).padStart(3, '0') : item.spl;
-                csv += `${item.date},"${item.area}","${item.eb}","${formattedSpl}"\n`;
-            });
-
-            const el = document.createElement('textarea');
-            el.value = csv;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            showToast("toastCsvCopied");
-        }
-
-        // Dynamic confirmed modals for DB reset
-        function clearFullDatabase() {
-            triggerHapticFeedback();
-            const confirmResetModalEl = document.getElementById('confirmResetModal');
-            if (confirmResetModalEl) confirmResetModalEl.classList.remove('hidden');
-        }
-
         const cancelResetBtnEl = document.getElementById('cancelResetBtn');
         if (cancelResetBtnEl) {
             cancelResetBtnEl.addEventListener('click', () => {
                 const confirmResetModalEl = document.getElementById('confirmResetModal');
                 if (confirmResetModalEl) confirmResetModalEl.classList.add('hidden');
             });
+        }
+
+        // Safe dialog confirmations
+        function clearFullDatabase() {
+            triggerHapticFeedback();
+            const confirmResetModalEl = document.getElementById('confirmResetModal');
+            if (confirmResetModalEl) confirmResetModalEl.classList.remove('hidden');
         }
 
         const confirmResetBtnEl = document.getElementById('confirmResetModal');
@@ -1504,6 +1576,23 @@
                     renderData();
                 }
             });
+        }
+
+        function exportCSV() {
+            triggerHapticFeedback();
+            let csv = "Date,Area,EB Number,Spool ID\n";
+            localDataStore.forEach(item => {
+                const formattedSpl = (settingPad && settingPad.checked) ? String(item.spl).padStart(3, '0') : item.spl;
+                csv += `${item.date},"${item.area}","${item.eb}","${formattedSpl}"\n`;
+            });
+
+            const el = document.createElement('textarea');
+            el.value = csv;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            showToast("toastCsvCopied");
         }
 
         // Initialize Lang & state configurations on window load
